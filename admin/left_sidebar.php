@@ -19,16 +19,27 @@
                  </a>
              </li>
              <li>
-                 <a href="pages/typography.html">
+                 <a href="manage_staff.php">
                      <i class="material-icons">badge</i>
                      <span>Manage Staff</span>
                  </a>
              </li>
              <li>
-                 <a href="pages/typography.html">
+                 <a href="javascript:void(0);" class="menu-toggle">
                      <i class="material-icons">person</i>
-                     <span>Manage Client</span>
+                     <span>Clients</span>
                  </a>
+                 <ul class="ml-menu">
+                     <li>
+                         <a href="all_clients.php">All Clients</a>
+                     </li>
+                     <li>
+                         <a href="vip_clients.php">VIP Clients</a>
+                     </li>
+                     <li>
+                         <a href="non_vip_clients.php">Non VIP Clients</a>
+                     </li>
+                 </ul>
              </li>
              <li>
                  <a href="pages/typography.html">
