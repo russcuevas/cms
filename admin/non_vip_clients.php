@@ -114,7 +114,7 @@
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> All Clients
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Non-VIP Clients
                     </li>
                 </ol>
             </div>
@@ -124,7 +124,7 @@
                     <div class="card">
                         <div class="header">
                             <h2>
-                                LIST OF CLIENTS
+                                LIST OF NON-VIP CLIENTS
                             </h2>
                         </div>
                         <div class="body">
@@ -159,20 +159,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Russel Vincent C. Cuevas</td>
-                                            <td>09124567891</td>
-                                            <td>2001/12/26</td>
-                                            <td>VIP 1234</td>
-                                            <td>2025/05/21</td>
-                                            <td>2025/05/21</td>
-                                            <td>
-
-                                                <a href="" class="btn bg-teal waves-effect">EDIT</a>
-                                                <a href="" class="btn bg-teal waves-effect">REMOVE</a>
-                                                <a href="" class="btn bg-teal waves-effect">VIEW REMARKS</a>
-                                            </td>
-                                        </tr>
                                         <tr>
                                             <td>Russel Vincent C. Cuevas</td>
                                             <td>09124567891</td>
