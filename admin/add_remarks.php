@@ -116,7 +116,7 @@
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> View Remarks
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Add Remarks
                     </li>
                 </ol>
             </div>
@@ -125,10 +125,10 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>VIEW REMARKS</h2>
+                            <h2>ADD REMARKS</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST" style="margin-top: 20px;">
+                            <form id="" method="POST" style="margin-top: 20px;">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
@@ -171,8 +171,7 @@
                                 </div>
 
                                 <div class="text-right">
-                                    <button class="btn bg-teal waves-effect" type="submit">EDIT</button>
-                                    <button type="button" class="btn bg-teal waves-effect">ADD REMARKS</button>
+                                    <button class="btn bg-teal waves-effect" type="submit">EDIT CLIENT INFO</button>
                                 </div>
                             </form>
                         </div>
@@ -181,65 +180,51 @@
             </div>
             <!-- #END# Basic Validation -->
 
-            <!-- Basic Examples -->
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>
-                                CLIENT NOTES HISTORY
-                            </h2>
+                            <h2>REMARKS</h2>
                         </div>
                         <div class="body">
-                            <!-- END ADD MODAL -->
-                            <div class="table-responsive">
-                                <?php if (isset($_SESSION['success'])) : ?>
-                                    <div class="alert alert-success" role="alert">
-                                        <?= $_SESSION['success']; ?>
+                            <form id="form_validation" method="POST">
+                                <div class="form-group form-float" style="margin-top: 20px; margin-bottom: 50apx !important;">
+                                    <div class="form-line">
+                                        <textarea style="border: 1px solid black; padding: 5px;" name="description" cols="30" rows="5" class="form-control" required></textarea>
+                                        <label class="form-label">Type a remarks</label>
                                     </div>
-                                    <?php unset($_SESSION['success']);
-                                    ?>
-                                <?php elseif (isset($_SESSION['errors'])) : ?>
-                                    <div class="alert alert-danger" role="alert">
-                                        <?= $_SESSION['errors']; ?>
+                                </div>
+                                <div class="row align-items-end" style="margin-top: 20px !important;">
+                                    <div class="col-md-3">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="surname" required>
+                                                <label class="form-label">Staff name</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <?php unset($_SESSION['errors']);
-                                    ?>
-                                <?php endif; ?>
-                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Date & Time</th>
-                                            <th>Noted by Staff/Admin</th>
-                                            <th>Remarks</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>2025/05/22</td>
-                                            <td>Sample Staff</td>
-                                            <td>Sample 1...</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect">VIEW</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2025/05/22</td>
-                                            <td>Sample Staff</td>
-                                            <td>Sample 2...</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect">VIEW</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+
+                                    <div class="col-md-4"></div>
+
+                                    <div class="col-md-4 ms-auto">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="file" class="form-control" name="photo">
+                                                <label class="form-label">UPLOAD PHOTO</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1 text-end">
+                                        <button class="btn bg-teal waves-effect" type="submit">SAVE</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Basic Examples -->
+            <!-- #END# Basic Validation -->
         </div>
     </section>
 
