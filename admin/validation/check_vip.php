@@ -9,10 +9,8 @@ if (isset($_POST['vip'])) {
     $count = $stmt->fetchColumn();
 
     if ($count > 0) {
-        // VIP already exists, return error message (any string)
         echo "false";
     } else {
-        // VIP not found, return true (string "true")
         echo "true";
     }
 }

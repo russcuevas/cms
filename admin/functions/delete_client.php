@@ -18,5 +18,5 @@ if (isset($_POST['delete']) && isset($_POST['id'])) {
     $_SESSION['errors'] = "Invalid request.";
 }
 
-header('Location: ../all_clients.php');
+header('Location: ' . $_SERVER['HTTP_REFERER']);
 exit();

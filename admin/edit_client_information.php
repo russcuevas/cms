@@ -1,12 +1,51 @@
 <?php
+session_start();
 include '../database/connection.php';
 
-// GET THE CLIENT ID
-$id = $_GET['id'];
-$query = $conn->prepare("SELECT * FROM tbl_clients WHERE id = ?");
-$query->execute([$id]);
-$client = $query->fetch();
+if (!isset($_GET['client_id'])) {
+    $_SESSION['error'] = "No client specified.";
+    header('Location: all_clients.php');
+    exit();
+}
 
+$client_id = (int) $_GET['client_id'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = htmlspecialchars($_POST['name']);
+    $last_name = htmlspecialchars($_POST['surname']);
+    $mobile = htmlspecialchars($_POST['mobile']);
+    $birthday = htmlspecialchars($_POST['birthday']);
+    $is_vip = (int) $_POST['is_vip'];
+
+    // If non-VIP now, clear the vip field regardless of POST data
+    if ($is_vip === 0) {
+        $vip = null;
+    } else {
+        // VIP is set only if is_vip == 1, otherwise null
+        $vip = isset($_POST['vip']) && $_POST['vip'] !== '' ? htmlspecialchars($_POST['vip']) : null;
+    }
+
+    $stmt = $conn->prepare("UPDATE tbl_clients SET first_name = ?, last_name = ?, mobile = ?, birthday = ?, is_vip = ?, vip = ? WHERE id = ?");
+    if ($stmt->execute([$first_name, $last_name, $mobile, $birthday, $is_vip, $vip, $client_id])) {
+        $_SESSION['success'] = 'Client updated successfully';
+    } else {
+        $_SESSION['error'] = 'Error updating client';
+    }
+
+    header('Location: edit_client_information.php?client_id=' . $client_id);
+    exit();
+}
+
+
+$stmt = $conn->prepare("SELECT * FROM tbl_clients WHERE id = ?");
+$stmt->execute([$client_id]);
+$client = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$client) {
+    $_SESSION['error'] = "Client not found.";
+    header('Location: all_clients.php');
+    exit();
+}
 
 ?>
 
@@ -41,6 +80,8 @@ $client = $query->fetch();
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
@@ -125,37 +166,54 @@ $client = $query->fetch();
     <section class="content">
         <div class="container-fluid">
             <div class="block-header">
-                <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
-                    <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
-                            Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> View Remarks
-                    </li>
+                <ol class="breadcrumb breadcrumb-col-red" style="font-size: 15px;">
+                    <li><a href="index.php"><i class="material-icons" style="font-size: 20px;">home</i> Dashboard</a></li>
+                    <li><a href="all_clients.php"><i class="material-icons" style="font-size: 20px;">description</i> Clients</a></li>
+                    <li class="active"><i class="material-icons" style="font-size: 20px;">edit</i> Edit Client</li>
                 </ol>
             </div>
-            <!-- Basic Validation -->
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>VIEW REMARKS</h2>
+                            <h2>Edit Client Information</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST" style="margin-top: 20px;">
+                            <form id="edit_customer_validation" method="POST" style="margin-top: 20px;">
+                                <input type="hidden" name="client_id" value="<?php echo $client_id; ?>">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
-                                            <div class="">
-                                                <label style="font-size: 20px !important;" class="form-label">First Name: <span><?php echo $client['first_name'] ?></span></label><br>
-                                                <label style="font-size: 20px !important;" class="form-label">Last Name: <span><?php echo $client['last_name'] ?></span></label><br>
-
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="name" required value="<?php echo htmlspecialchars($client['first_name']); ?>" required>
+                                                <label class="form-label">First Name <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
-                                            <div class="">
-                                                <label style="font-size: 20px !important;" class="form-label">Mobile: <span><?php echo $client['mobile'] ?></span></label><br>
-                                                <label style="font-size: 20px !important;" class="form-label">Date of Birth: <span><?php echo $client['birthday'] ?></span></label><br>
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="surname" required value="<?php echo htmlspecialchars($client['last_name']); ?>" required>
+                                                <label class="form-label">Last Name <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-top: 10px !important;">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="number" class="form-control" name="mobile" required value="<?php echo htmlspecialchars($client['mobile']); ?>" required>
+                                                <label class="form-label">Mobile <span style="color: red;">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="date" class="form-control" name="birthday" required value="<?php echo htmlspecialchars($client['birthday']); ?>" required>
+                                                <label class="form-label">Date of birth <span style="color: red;">*</span></label>
                                             </div>
                                         </div>
                                     </div>
@@ -163,89 +221,38 @@ $client = $query->fetch();
 
                                 <div class="row">
                                     <div class="col-md-6">
-
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
-                                            <label style="font-size: 20px !important;" class="form-label">Type:</label>
-                                            <label style="font-size: 20px !important;" class="form-label"><?= $client['is_vip'] ? 'VIP ' . htmlspecialchars($client['vip']) : 'Non-VIP' ?></label>
+                                            <label class="form-label">VIP Type <span style="color: red;">*</span></label>
+                                            <select class="form-control select-form" name="is_vip" id="vip_select" required>
+                                                <option value="" disabled>Choose VIP TYPE</option>
+                                                <option value="1" <?php echo ($client['is_vip'] == 1) ? 'selected' : ''; ?>>VIP</option>
+                                                <option value="0" <?php echo ($client['is_vip'] == 0) ? 'selected' : ''; ?>>Non-VIP</option>
+                                            </select>
+                                        </div>
+
+                                        <div id="vip_number_group" class="form-group form-float" style="display: <?php echo ($client['is_vip'] == 1) ? 'block' : 'none'; ?>;">
+                                            <div class="form-line">
+                                                <input type="number" class="form-control" name="vip" value="<?php echo htmlspecialchars($client['vip']); ?>">
+                                                <label class="form-label">VIP #</label>
+                                            </div>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="text-right">
-                                    <a href="edit_client_information.php?client_id=<?php echo urlencode($client['id']); ?>" class="btn bg-teal waves-effect">EDIT CLIENT INFORMATION</a>
-                                    <button type="button" class="btn bg-teal waves-effect">ADD REMARKS</button>
+                                    <button class="btn bg-teal waves-effect" type="submit">UPDATE</button>
+                                    <button type="button" class="btn btn-link waves-effect" onclick="window.location.href = 'all_clients.php'">BACK</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Basic Validation -->
-
-            <!-- Basic Examples -->
-            <div class="row clearfix">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header">
-                            <h2>
-                                CLIENT NOTES HISTORY
-                            </h2>
-                        </div>
-                        <div class="body">
-                            <!-- END ADD MODAL -->
-                            <div class="table-responsive">
-                                <?php if (isset($_SESSION['success'])) : ?>
-                                    <div class="alert alert-success" role="alert">
-                                        <?= $_SESSION['success']; ?>
-                                    </div>
-                                    <?php unset($_SESSION['success']);
-                                    ?>
-                                <?php elseif (isset($_SESSION['errors'])) : ?>
-                                    <div class="alert alert-danger" role="alert">
-                                        <?= $_SESSION['errors']; ?>
-                                    </div>
-                                    <?php unset($_SESSION['errors']);
-                                    ?>
-                                <?php endif; ?>
-                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Date & Time</th>
-                                            <th>Noted by Staff/Admin</th>
-                                            <th>Remarks</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>2025/05/22</td>
-                                            <td>Sample Staff</td>
-                                            <td>Sample 1...</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect">VIEW</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2025/05/22</td>
-                                            <td>Sample Staff</td>
-                                            <td>Sample 2...</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect">VIEW</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- #END# Basic Examples -->
         </div>
     </section>
+
 
     <!-- Jquery Core Js -->
     <script src="plugins/jquery/jquery.min.js"></script>
@@ -278,22 +285,74 @@ $client = $query->fetch();
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
     <script src="js/pages/tables/jquery-datatable.js"></script>
-
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
-
-    <!-- SHOW VIP -->
     <script>
+        $('#edit_customer_validation').validate({
+            rules: {
+                'vip': {
+                    required: function() {
+                        return $('#vip_select').val() === '1';
+                    },
+                    remote: {
+                        url: 'http://localhost/tpy_clinic/admin/validation/edit_vip.php',
+                        type: 'post',
+                        data: {
+                            vip: function() {
+                                return $('input[name="vip"]').val();
+                            },
+                            client_id: function() {
+                                return $('input[name="client_id"]').val();
+                            }
+                        }
+                    }
+                }
+            },
+            messages: {
+                vip: {
+                    remote: "VIP number already exists"
+                }
+            },
+            highlight: function(input) {
+                $(input).parents('.form-line').addClass('error');
+            },
+            unhighlight: function(input) {
+                $(input).parents('.form-line').removeClass('error');
+            },
+            errorPlacement: function(error, element) {
+                $(element).parents('.form-group').append(error);
+            }
+        });
+
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
         document.getElementById('vip_select').addEventListener('change', function() {
             const vip_number_group = document.getElementById('vip_number_group');
-            if (this.value === 'VIP') {
+            if (this.value === '1') {
                 vip_number_group.style.display = 'block';
             } else {
                 vip_number_group.style.display = 'none';
             }
         });
     </script>
-    <!-- END SHOW VIP -->
 
 </body>
 

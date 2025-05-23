@@ -171,8 +171,9 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <td><?= htmlspecialchars($client['created_at']) ?></td>
                                                 <td><?= htmlspecialchars($client['updated_at']) ?></td>
                                                 <td>
-                                                    <a href="view_remarks.php?id=<?= urlencode($client['id']) ?>" class="btn bg-teal waves-effect">VIEW REMARKS</a>
-                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#delete_<?php echo $client['id']; ?>">REMOVE</a>
+                                                    <a style="margin-bottom: 5px;" href="edit_client_information.php?client_id=<?php echo urlencode($client['id']); ?>" class="btn bg-teal waves-effect">EDIT CLIENT INFORMATION</a> <br>
+                                                    <a style="margin-bottom: 5px;" href="view_remarks.php?id=<?= urlencode($client['id']) ?>" class="btn bg-teal waves-effect">VIEW REMARKS</a>
+                                                    <a style="margin-bottom: 5px;" href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#delete_<?php echo $client['id']; ?>">REMOVE</a>
 
                                                     <div class="modal fade" id="delete_<?= $client['id']; ?>" tabindex="-1" role="dialog">
                                                         <div class="modal-dialog" role="document">
