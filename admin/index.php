@@ -9,6 +9,14 @@ $result_total_staff = $stmt_total_staff->fetch(PDO::FETCH_ASSOC);
 $total_staff = $result_total_staff['total_staff'];
 // END GET TOTAL STAFF
 
+// GET THE CLIENT
+$get_total_client = "SELECT COUNT(*) AS total_client FROM `tbl_clients`";
+$stmt_total_client = $conn->prepare($get_total_client);
+$stmt_total_client->execute();
+$result_total_client = $stmt_total_client->fetch(PDO::FETCH_ASSOC);
+$total_client = $result_total_client['total_client'];
+// END GET TOTAL CLIENT
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -149,7 +157,7 @@ $total_staff = $result_total_staff['total_staff'];
                         </div>
                         <div class="content">
                             <div class="text">TOTAL CLIENT</div>
-                            <div class="number">0</div>
+                            <div class="number"><?php echo $total_client ?></div>
 
                         </div>
                     </div>

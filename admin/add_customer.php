@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h2>ADD CLIENTS</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST" style="margin-top: 20px;">
+                            <form id="add_customer_validation" method="POST" style="margin-top: 20px;">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
@@ -277,6 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
+    <script src="ajax/add_customer.js"></script>
 
     <script>
         <?php if (isset($_SESSION['success'])): ?>
