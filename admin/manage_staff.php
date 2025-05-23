@@ -143,6 +143,67 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" data-toggle="modal" data-target="#addStaffModal">+ ADD STAFF</button>
                             </div>
 
+                            <!-- ADD MODAL -->
+                            <div class="modal fade" id="addStaffModal" tabindex="-1" role="dialog" style="display: none;">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="defaultModalLabel">Add Staff</h4>
+                                        </div>
+                                        <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
+                                            <form id="add_staff_validation" method="POST" style="margin-top:10px;">
+                                                <!-- Fullname -->
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <input type="text" class="form-control" name="fullname" required>
+                                                        <label class="form-label">Fullname</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Mobile -->
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <input type="number" class="form-control" name="mobile" required>
+                                                        <label class="form-label">Mobile</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Birthday -->
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <input type="date" class="form-control" name="birthday" required>
+                                                        <label class="form-label">Birthday</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Email -->
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <input type="email" class="form-control" name="email" required>
+                                                        <label class="form-label">Email</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Password -->
+                                                <div class="form-group form-float">
+                                                    <div class="form-line">
+                                                        <input type="password" class="form-control" name="password" maxlength="12" minlength="6" required>
+                                                        <label class="form-label">Password</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Footer Buttons -->
+                                                <div class="modal-footer">
+                                                    <button class="btn bg-teal waves-effect" name="add_staff_btn" type="submit">SAVE</button>
+                                                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END ADD MODAL -->
+
                             <div class="table-responsive">
                                 <?php if (isset($_SESSION['success'])) : ?>
                                     <div class="alert alert-success" role="alert">

@@ -1,3 +1,15 @@
+<?php
+include '../database/connection.php';
+
+// GET THE CLIENT ID
+$id = $_GET['id'];
+$query = $conn->prepare("SELECT * FROM tbl_clients WHERE id = ?");
+$query->execute([$id]);
+$client = $query->fetch();
+
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -133,8 +145,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <div class="">
-                                                <label style="font-size: 20px !important;" class="form-label">First Name: <span>Russel Vincent</span></label><br>
-                                                <label style="font-size: 20px !important;" class="form-label">Last Name: <span>Cuevas</span></label><br>
+                                                <label style="font-size: 20px !important;" class="form-label">First Name: <span><?php echo $client['first_name'] ?></span></label><br>
+                                                <label style="font-size: 20px !important;" class="form-label">Last Name: <span><?php echo $client['last_name'] ?></span></label><br>
 
                                             </div>
                                         </div>
@@ -142,8 +154,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <div class="">
-                                                <label style="font-size: 20px !important;" class="form-label">Mobile: <span>09123456781</span></label><br>
-                                                <label style="font-size: 20px !important;" class="form-label">Date of Birth: <span>2001/12/26</span></label><br>
+                                                <label style="font-size: 20px !important;" class="form-label">Mobile: <span><?php echo $client['mobile'] ?></span></label><br>
+                                                <label style="font-size: 20px !important;" class="form-label">Date of Birth: <span><?php echo $client['birthday'] ?></span></label><br>
                                             </div>
                                         </div>
                                     </div>
@@ -156,22 +168,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <label style="font-size: 20px !important;" class="form-label">Type:</label>
-                                            <label style="font-size: 20px !important;" class="form-label">VIP 1234</label>
-
-                                        </div>
-
-                                        <div id="vip_number_group" class="form-group form-float" style="display: none;">
-                                            <div class="form-line">
-                                                <input type="number" class="form-control" name="vip_number">
-                                                <label class="form-label">VIP #</label>
-                                            </div>
+                                            <label style="font-size: 20px !important;" class="form-label"><?= $client['is_vip'] ? 'VIP ' . htmlspecialchars($client['vip']) : 'Non-VIP' ?></label>
                                         </div>
                                     </div>
 
                                 </div>
 
                                 <div class="text-right">
-                                    <button class="btn bg-teal waves-effect" type="submit">EDIT</button>
+                                    <button class="btn bg-teal waves-effect" type="submit">EDIT CLIENT INFORMATION</button>
                                     <button type="button" class="btn bg-teal waves-effect">ADD REMARKS</button>
                                 </div>
                             </form>

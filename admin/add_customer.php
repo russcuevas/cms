@@ -1,3 +1,38 @@
+<?php
+session_start();
+include '../database/connection.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = htmlspecialchars($_POST['name']);
+    $last_name = htmlspecialchars($_POST['surname']);
+    $mobile = htmlspecialchars($_POST['mobile']);
+    $birthday = htmlspecialchars($_POST['birthday']);
+    $is_vip = htmlspecialchars($_POST['is_vip']);
+    $vip = isset($_POST['vip']) ? htmlspecialchars($_POST['vip']) : null;
+
+    $first_name = $conn->quote($first_name);
+    $last_name = $conn->quote($last_name);
+    $mobile = $conn->quote($mobile);
+    $birthday = $conn->quote($birthday);
+    $is_vip = (int) $is_vip;
+    $vip_value = $vip !== null ? $conn->quote($vip) : 'NULL';
+
+    $sql = "INSERT INTO tbl_clients (first_name, last_name, mobile, birthday, is_vip, vip)
+            VALUES ($first_name, $last_name, $mobile, $birthday, $is_vip, $vip_value)";
+
+    if ($conn->exec($sql)) {
+        $_SESSION['success'] = 'Client added successfully';
+        header('location: add_customer.php');
+        exit();
+    } else {
+        $_SESSION['error'] = 'Error adding client';
+        header('location: add_customer.php');
+        exit();
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -29,6 +64,8 @@
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
@@ -236,15 +273,36 @@
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
     <script src="js/pages/tables/jquery-datatable.js"></script>
-
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
+
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 
     <!-- SHOW VIP -->
     <script>
         document.getElementById('vip_select').addEventListener('change', function() {
             const vip_number_group = document.getElementById('vip_number_group');
-            if (this.value === 'VIP') {
+            if (this.value === '1') {
                 vip_number_group.style.display = 'block';
             } else {
                 vip_number_group.style.display = 'none';

@@ -171,7 +171,7 @@
                                 </div>
 
                                 <div class="text-right">
-                                    <button class="btn bg-teal waves-effect" type="submit">EDIT CLIENT INFO</button>
+                                    <button class="btn bg-teal waves-effect" type="submit">EDIT CLIENT INFORMATION</button>
                                 </div>
                             </form>
                         </div>

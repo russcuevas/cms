@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿<?php
+include '../database/connection.php';
+
+// GET THE STAFF
+$get_total_staff = "SELECT COUNT(*) AS total_staff FROM `tbl_staff`";
+$stmt_total_staff = $conn->prepare($get_total_staff);
+$stmt_total_staff->execute();
+$result_total_staff = $stmt_total_staff->fetch(PDO::FETCH_ASSOC);
+$total_staff = $result_total_staff['total_staff'];
+// END GET TOTAL STAFF
+
+?>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -119,49 +131,49 @@
 
             <!-- Widgets -->
             <div class="row clearfix">
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='admin_management.php';">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='manage_staff.php';">
                     <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
                         <div class="icon">
                             <i class="material-icons">badge</i>
                         </div>
                         <div class="content">
                             <div class="text">TOTAL STAFF</div>
-                            <div class="number count-to">0</div>
+                            <div class="number"><?php echo $total_staff ?></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='all_clients.php';">
                     <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
                         <div class="icon">
                             <i class="material-icons">person</i>
                         </div>
                         <div class="content">
                             <div class="text">TOTAL CLIENT</div>
-                            <div class="number count-to">0</div>
+                            <div class="number">0</div>
 
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='non_vip_clients.php';">
                     <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
                         <div class="icon">
                             <i class="material-icons">unpublished</i>
                         </div>
                         <div class="content">
-                            <div class="text">TOTAL NOT VIP</div>
-                            <div class="number count-to">0</div>
+                            <div class="text">TOTAL NON VIP</div>
+                            <div class="number">0</div>
 
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='vip_clients.php';">
                     <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
                         <div class="icon">
                             <i class="material-icons">verified</i>
                         </div>
                         <div class="content">
                             <div class="text">TOTAL VIP</div>
-                            <div class="number count-to">0</div>
+                            <div class="number">0</div>
 
                         </div>
                     </div>
