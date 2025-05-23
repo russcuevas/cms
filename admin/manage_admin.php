@@ -1,3 +1,13 @@
+<?php
+include '../database/connection.php';
+
+// FETCH ADMIN
+$stmt = $conn->prepare("SELECT * FROM tbl_admin");
+$stmt->execute();
+$admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// END FETCH ADMIN
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -23,6 +33,9 @@
 
     <!-- JQuery DataTable Css -->
     <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
@@ -131,66 +144,7 @@
                             <div>
                                 <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" data-toggle="modal" data-target="#addAdminModal">+ ADD ADMIN</button>
                             </div>
-                            <!-- ADD MODAL -->
-                            <div class="modal fade" id="addAdminModal" tabindex="-1" role="dialog" style="display: none;">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="defaultModalLabel">Add Admin</h4>
-                                        </div>
-                                        <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
-                                            <form id="add_admin_validation" method="POST" style="margin-top:10px;">
-                                                <!-- Fullname -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="text" class="form-control" name="fullname" required>
-                                                        <label class="form-label">Fullname</label>
-                                                    </div>
-                                                </div>
 
-                                                <!-- Mobile -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="number" class="form-control" name="mobile" required>
-                                                        <label class="form-label">Mobile</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Birthday -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="date" class="form-control" name="birthday" required>
-                                                        <label class="form-label">Birthday</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Email -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="email" class="form-control" name="email" required>
-                                                        <label class="form-label">Email</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Password -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="password" class="form-control" name="password" maxlength="12" minlength="6" required>
-                                                        <label class="form-label">Password</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Footer Buttons -->
-                                                <div class="modal-footer">
-                                                    <button class="btn bg-teal waves-effect" name="add_admin_btn" type="submit">SAVE</button>
-                                                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END ADD MODAL -->
                             <div class="table-responsive">
                                 <?php if (isset($_SESSION['success'])) : ?>
                                     <div class="alert alert-success" role="alert">
@@ -218,18 +172,23 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td>2011/04/25</td>
-                                            <td>2011/04/25</td>
-                                            <td>
-                                                <a href="">Edit</a>
-                                                <a href="">Remove</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($admins as $admin): ?>
+                                            <tr>
+                                                <td><?php echo $admin['fullname'] ?></td>
+                                                <td><?php echo $admin['email'] ?></td>
+                                                <td><?php echo $admin['mobile'] ?></td>
+                                                <td><?php echo $admin['birthday'] ?></td>
+                                                <td><?php echo $admin['created_at'] ?></td>
+                                                <td><?php echo $admin['updated_at'] ?></td>
+                                                <td>
+                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#edit_<?php echo $admin['id']; ?>">Edit</a>
+                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#delete_<?php echo $admin['id']; ?>">Remove</a>
+                                                    <!-- MODAL -->
+                                                    <?php include 'modal/manage_admin.php' ?>
+                                                    <!-- END MODAL -->
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -237,7 +196,7 @@
                     </div>
                 </div>
             </div>
-            <!-- #END# Basic Examples -->
+            <!-- END ADMIN MANAGEMENT -->
         </div>
     </section>
 
@@ -273,32 +232,12 @@
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
     <script src="js/pages/tables/jquery-datatable.js"></script>
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
-
-    <!-- ADD ADMIN VALIDATION -->
-    <script>
-        $('#add_admin_validation').validate({
-            rules: {
-                'date': {
-                    customdate: true
-                },
-                'creditcard': {
-                    creditcard: true
-                }
-            },
-            highlight: function(input) {
-                $(input).parents('.form-line').addClass('error');
-            },
-            unhighlight: function(input) {
-                $(input).parents('.form-line').removeClass('error');
-            },
-            errorPlacement: function(error, element) {
-                $(element).parents('.form-group').append(error);
-            }
-        });
-    </script>
+    <script src="ajax/manage_admin.js"></script>
     <!-- END ADD ADMIN VALIDATION -->
 </body>
 

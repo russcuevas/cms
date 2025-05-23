@@ -1,3 +1,12 @@
+<?php
+include '../database/connection.php';
+
+// FETCH STAFF
+$stmt = $conn->prepare("SELECT * FROM tbl_staff");
+$stmt->execute();
+$staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// END FETCH STAFF
+?>
 <!DOCTYPE html>
 <html>
 
@@ -27,6 +36,8 @@
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
@@ -131,66 +142,7 @@
                             <div>
                                 <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" data-toggle="modal" data-target="#addStaffModal">+ ADD STAFF</button>
                             </div>
-                            <!-- ADD MODAL -->
-                            <div class="modal fade" id="addStaffModal" tabindex="-1" role="dialog" style="display: none;">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="defaultModalLabel">Add Staff</h4>
-                                        </div>
-                                        <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
-                                            <form id="add_staff_validation" method="POST" style="margin-top:10px;">
-                                                <!-- Fullname -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="text" class="form-control" name="fullname" required>
-                                                        <label class="form-label">Fullname</label>
-                                                    </div>
-                                                </div>
 
-                                                <!-- Mobile -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="number" class="form-control" name="mobile" required>
-                                                        <label class="form-label">Mobile</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Birthday -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="date" class="form-control" name="birthday" required>
-                                                        <label class="form-label">Birthday</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Email -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="email" class="form-control" name="email" required>
-                                                        <label class="form-label">Email</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Password -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="password" class="form-control" name="password" maxlength="12" minlength="6" required>
-                                                        <label class="form-label">Password</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Footer Buttons -->
-                                                <div class="modal-footer">
-                                                    <button class="btn bg-teal waves-effect" name="add_admin_btn" type="submit">SAVE</button>
-                                                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END ADD MODAL -->
                             <div class="table-responsive">
                                 <?php if (isset($_SESSION['success'])) : ?>
                                     <div class="alert alert-success" role="alert">
@@ -218,18 +170,23 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td>2011/04/25</td>
-                                            <td>2011/04/25</td>
-                                            <td>
-                                                <a href="">Edit</a>
-                                                <a href="">Remove</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($staffs as $staff): ?>
+                                            <tr>
+                                                <td><?php echo $staff['fullname'] ?></td>
+                                                <td><?php echo $staff['email'] ?></td>
+                                                <td><?php echo $staff['mobile'] ?></td>
+                                                <td><?php echo $staff['birthday'] ?></td>
+                                                <td><?php echo $staff['created_at'] ?></td>
+                                                <td><?php echo $staff['updated_at'] ?></td>
+                                                <td>
+                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#edit_<?php echo $staff['id']; ?>">Edit</a>
+                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#delete_<?php echo $staff['id']; ?>">Remove</a>
+                                                    <!-- MODAL -->
+                                                    <?php include 'modal/manage_staff.php' ?>
+                                                    <!-- END MODAL -->
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -273,33 +230,12 @@
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
     <script src="js/pages/tables/jquery-datatable.js"></script>
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
-
-    <!-- ADD STAFF VALIDATION -->
-    <script>
-        $('#add_staff_validation').validate({
-            rules: {
-                'date': {
-                    customdate: true
-                },
-                'creditcard': {
-                    creditcard: true
-                }
-            },
-            highlight: function(input) {
-                $(input).parents('.form-line').addClass('error');
-            },
-            unhighlight: function(input) {
-                $(input).parents('.form-line').removeClass('error');
-            },
-            errorPlacement: function(error, element) {
-                $(element).parents('.form-group').append(error);
-            }
-        });
-    </script>
-    <!-- END ADD STAFF VALIDATION -->
+    <script src="ajax/manage_staff.js"></script>
 </body>
 
 </html>

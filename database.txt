@@ -1,0 +1,81 @@
+tbl_admin
+fullname
+mobile
+birthday
+email
+password
+created_at
+updated_at
+
+tbl_staff
+fullname
+mobile
+birthday
+email
+password
+created_at
+updated_at
+
+tbl_clients
+first_name
+last_name
+mobile
+birthday
+is_vip
+vip -> nullable
+
+tbl_remarks
+remarks
+added_by
+photo -> nullable
+created_at
+updated_at
+
+
+CREATE TABLE tbl_admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(255) NOT NULL,
+    mobile VARCHAR(20) NOT NULL,
+    birthday DATE NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create tbl_staff
+CREATE TABLE tbl_staff (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(255) NOT NULL,
+    mobile VARCHAR(20) NOT NULL,
+    birthday DATE NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create tbl_clients
+CREATE TABLE tbl_clients (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    mobile VARCHAR(20) NOT NULL,
+    birthday DATE NOT NULL,
+    is_vip BOOLEAN DEFAULT FALSE,
+    vip VARCHAR(255), -- Nullable VIP code or name
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create tbl_remarks
+CREATE TABLE tbl_remarks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    remarks TEXT NOT NULL,
+    added_by VARCHAR(255) NOT NULL,
+    photo VARCHAR(255), -- nullable path or filename
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES tbl_clients(id) ON DELETE CASCADE
+);

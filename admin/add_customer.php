@@ -177,14 +177,14 @@
                                             <label class="form-label">VIP Type <span style="color: red;">*</span></label>
                                             <select class="form-control select-form" name="is_vip" id="vip_select" required>
                                                 <option value="" disabled selected>Choose VIP TYPE</option>
-                                                <option value="VIP">VIP</option>
-                                                <option value="Non-VIP">Non-VIP</option>
+                                                <option value="1">VIP</option>
+                                                <option value="0">Non-VIP</option>
                                             </select>
                                         </div>
 
                                         <div id="vip_number_group" class="form-group form-float" style="display: none;">
                                             <div class="form-line">
-                                                <input type="number" class="form-control" name="vip_number">
+                                                <input type="number" class="form-control" name="vip">
                                                 <label class="form-label">VIP #</label>
                                             </div>
                                         </div>
