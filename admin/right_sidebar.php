@@ -14,7 +14,7 @@
                         </div>
                     </li>
 
-                    <li onclick="window.location.href=('logout.php');" style="display: flex; align-items: center;">
+                    <li onclick="window.location.href=('admin_logout.php');" style="display: flex; align-items: center;">
                         <div>
                             <label class=" mb-0 hov-pointer">
                                 <i class="material-icons mr-2" style="font-size:18px; vertical-align: middle;">exit_to_app</i>

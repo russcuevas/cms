@@ -28,7 +28,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <span>Manage Staff</span>
                 </a>
             </li>
-            <li class="<?= in_array($currentPage, ['all_clients.php', 'vip_clients.php', 'non_vip_clients.php', 'edit_client_information.php', 'view_client_notes.php', 'view_remarks.php', 'add_remarks.php', 'add_customer.php']) ? 'active' : '' ?>">
+            <li class="<?= in_array($currentPage, ['all_clients.php', 'vip_clients.php', 'non_vip_clients.php', 'edit_client_information.php', 'view_client_notes.php', 'view_remarks.php', 'add_remarks.php', 'add_customer.php', 'view_client_notes.php']) ? 'active' : '' ?>">
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">person</i>
                     <span>Clients</span>
@@ -46,7 +46,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </ul>
             </li>
             <li class="<?= ($currentPage == 'typography.html') ? 'active' : '' ?>">
-                <a href="pages/typography.html">
+                <a href="admin_logout.php">
                     <i class="material-icons">logout</i>
                     <span>Logout</span>
                 </a>

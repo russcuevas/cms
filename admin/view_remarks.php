@@ -221,7 +221,7 @@ if ($id) {
                                     <thead>
                                         <tr>
                                             <th>Date & Time</th>
-                                            <th>Noted by Staff/Admin</th>
+                                            <th>Added by Staff/Admin</th>
                                             <th>Remarks</th>
                                             <th>Action</th>
                                         </tr>
