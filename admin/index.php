@@ -17,6 +17,22 @@ $result_total_client = $stmt_total_client->fetch(PDO::FETCH_ASSOC);
 $total_client = $result_total_client['total_client'];
 // END GET TOTAL CLIENT
 
+// GET THE NON VIP
+$get_total_non_vip = "SELECT COUNT(*) AS total_non_vip FROM `tbl_clients` WHERE is_vip = 0";
+$stmt_total_non_vip = $conn->prepare($get_total_non_vip);
+$stmt_total_non_vip->execute();
+$result_total_non_vip = $stmt_total_non_vip->fetch(PDO::FETCH_ASSOC);
+$total_non_vip = $result_total_non_vip['total_non_vip'];
+// END GET TOTAL NON VIP
+
+// GET THE VIP
+$get_total_vip = "SELECT COUNT(*) AS total_vip FROM `tbl_clients` WHERE is_vip = 1";
+$stmt_total_vip = $conn->prepare($get_total_vip);
+$stmt_total_vip->execute();
+$result_total_vip = $stmt_total_vip->fetch(PDO::FETCH_ASSOC);
+$total_vip = $result_total_vip['total_vip'];
+// END GET TOTAL VIP
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -169,7 +185,7 @@ $total_client = $result_total_client['total_client'];
                         </div>
                         <div class="content">
                             <div class="text">TOTAL NON VIP</div>
-                            <div class="number">0</div>
+                            <div class="number"><?php echo $total_non_vip ?></div>
 
                         </div>
                     </div>
@@ -181,7 +197,7 @@ $total_client = $result_total_client['total_client'];
                         </div>
                         <div class="content">
                             <div class="text">TOTAL VIP</div>
-                            <div class="number">0</div>
+                            <div class="number"><?php echo $total_vip ?></div>
 
                         </div>
                     </div>

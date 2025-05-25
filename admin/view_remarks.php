@@ -1,13 +1,20 @@
 <?php
 include '../database/connection.php';
 
-// GET THE CLIENT ID
-$id = $_GET['id'];
-$query = $conn->prepare("SELECT * FROM tbl_clients WHERE id = ?");
-$query->execute([$id]);
-$client = $query->fetch();
+$id = $_GET['id'] ?? null;
+$client = null;
+if ($id) {
+    $query = $conn->prepare("SELECT * FROM tbl_clients WHERE id = ?");
+    $query->execute([$id]);
+    $client = $query->fetch();
+}
 
-
+$remarks = [];
+if ($id) {
+    $remarksQuery = $conn->prepare("SELECT * FROM tbl_remarks WHERE client_id = ? ORDER BY created_at DESC");
+    $remarksQuery->execute([$id]);
+    $remarks = $remarksQuery->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -176,7 +183,7 @@ $client = $query->fetch();
 
                                 <div class="text-right">
                                     <a href="edit_client_information.php?client_id=<?php echo urlencode($client['id']); ?>" class="btn bg-teal waves-effect">EDIT CLIENT INFORMATION</a>
-                                    <button type="button" class="btn bg-teal waves-effect">ADD REMARKS</button>
+                                    <a href="add_remarks.php?id=<?php echo urlencode($client['id']); ?>" class="btn bg-teal waves-effect">ADD REMARKS</a>
                                 </div>
                             </form>
                         </div>
@@ -220,22 +227,18 @@ $client = $query->fetch();
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>2025/05/22</td>
-                                            <td>Sample Staff</td>
-                                            <td>Sample 1...</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect">VIEW</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2025/05/22</td>
-                                            <td>Sample Staff</td>
-                                            <td>Sample 2...</td>
-                                            <td>
-                                                <a href="" class="btn bg-teal waves-effect">VIEW</a>
-                                            </td>
-                                        </tr>
+                                        <?php foreach ($remarks as $remark): ?>
+                                            <tr>
+                                                <td><?= date("Y/m/d - h:i:s A", strtotime($remark['created_at'])) ?></td>
+                                                <td><?= htmlspecialchars($remark['added_by']) ?></td>
+                                                <td>
+                                                    <?= nl2br(htmlspecialchars(strlen($remark['remarks']) > 50 ? substr($remark['remarks'], 0, 50) . '...' : $remark['remarks'])) ?>
+                                                </td>
+                                                <td>
+                                                    <a href="view_client_notes.php?id=<?= $remark['id'] ?>" class="btn bg-teal waves-effect">VIEW INFORMATION</a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>

@@ -140,7 +140,11 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="body">
                             <div>
+                                <p>Filter by:</p>
                                 <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='add_customer.php'">+ ADD CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='all_clients.php'">ALL CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='vip_clients.php'">VIP CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='non_vip_clients.php'">NON-VIP CLIENTS</button>
                             </div>
                             <!-- END ADD MODAL -->
                             <div class="table-responsive">

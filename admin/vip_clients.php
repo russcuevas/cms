@@ -1,3 +1,12 @@
+<?php
+session_start();
+include '../database/connection.php';
+
+$stmt = $conn->query("SELECT * FROM tbl_clients WHERE is_vip = 1 ORDER BY id DESC");
+$clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -27,6 +36,8 @@
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
@@ -129,26 +140,18 @@
                         </div>
                         <div class="body">
                             <div>
+                                <p>Filter by:</p>
                                 <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='add_customer.php'">+ ADD CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='all_clients.php'">ALL CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='vip_clients.php'">VIP CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='non_vip_clients.php'">NON-VIP CLIENTS</button>
                             </div>
                             <!-- END ADD MODAL -->
                             <div class="table-responsive">
-                                <?php if (isset($_SESSION['success'])) : ?>
-                                    <div class="alert alert-success" role="alert">
-                                        <?= $_SESSION['success']; ?>
-                                    </div>
-                                    <?php unset($_SESSION['success']);
-                                    ?>
-                                <?php elseif (isset($_SESSION['errors'])) : ?>
-                                    <div class="alert alert-danger" role="alert">
-                                        <?= $_SESSION['errors']; ?>
-                                    </div>
-                                    <?php unset($_SESSION['errors']);
-                                    ?>
-                                <?php endif; ?>
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
+                                            <th>#</th>
                                             <th>Fullname</th>
                                             <th>Mobile</th>
                                             <th>Date of birth</th>
@@ -159,20 +162,45 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Russel Vincent C. Cuevas</td>
-                                            <td>09124567891</td>
-                                            <td>2001/12/26</td>
-                                            <td>VIP 1234</td>
-                                            <td>2025/05/21</td>
-                                            <td>2025/05/21</td>
-                                            <td>
+                                        <?php foreach ($clients as $index => $client): ?>
+                                            <tr>
+                                                <td><?= $index + 1 ?></td>
+                                                <td><?= htmlspecialchars($client['first_name'] . ' ' . $client['last_name']) ?></td>
+                                                <td><?= htmlspecialchars($client['mobile']) ?></td>
+                                                <td><?= htmlspecialchars($client['birthday']) ?></td>
+                                                <td>
+                                                    <?= $client['is_vip'] ? 'VIP ' . htmlspecialchars($client['vip']) : 'Non-VIP' ?>
+                                                </td>
 
-                                                <a href="" class="btn bg-teal waves-effect">EDIT</a>
-                                                <a href="" class="btn bg-teal waves-effect">REMOVE</a>
-                                                <a href="" class="btn bg-teal waves-effect">VIEW REMARKS</a>
-                                            </td>
-                                        </tr>
+                                                <td><?= htmlspecialchars($client['created_at']) ?></td>
+                                                <td><?= htmlspecialchars($client['updated_at']) ?></td>
+                                                <td>
+                                                    <a style="margin-bottom: 5px;" href="edit_client_information.php?client_id=<?php echo urlencode($client['id']); ?>" class="btn bg-teal waves-effect">EDIT CLIENT INFORMATION</a> <br>
+                                                    <a style="margin-bottom: 5px;" href="view_remarks.php?id=<?= urlencode($client['id']) ?>" class="btn bg-teal waves-effect">VIEW REMARKS</a>
+                                                    <a style="margin-bottom: 5px;" href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#delete_<?php echo $client['id']; ?>">REMOVE</a>
+
+                                                    <div class="modal fade" id="delete_<?= $client['id']; ?>" tabindex="-1" role="dialog">
+                                                        <div class="modal-dialog" role="document">
+                                                            <form action="functions/delete_client.php" method="POST">
+                                                                <input type="hidden" name="id" value="<?= $client['id']; ?>">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title" id="defaultModalLabel">Confirm Delete</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        Are you sure you want to delete <strong><?= htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?></strong>?
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="submit" name="delete" class="btn bg-teal waves-effect">YES, DELETE</button>
+                                                                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">CANCEL</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -219,6 +247,27 @@
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>
