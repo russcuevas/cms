@@ -29,43 +29,38 @@
 </aside>
 <!-- CHANGE PASSWORD EXECUTE -->
 <?php
-if (isset($_POST['change_password_btn'])) { // Check if the 'change_password_btn' is set
+if (isset($_POST['change_password_btn'])) {
     if (!empty($_POST['new_password']) && !empty($_POST['confirm_password'])) {
-        $new_password = $_POST['new_password'];
-        $confirm_password = $_POST['confirm_password'];
+        $new_password = trim($_POST['new_password']);
+        $confirm_password = trim($_POST['confirm_password']);
 
-        // Check if the passwords match
         if ($new_password === $confirm_password) {
-            // Hash the new password
-            $hashed_password = sha1($new_password);
+            if (isset($_SESSION['admin_id'])) {
+                $admin_id = $_SESSION['admin_id'];
 
-            // Get the admin's ID from the session
-            $admin_id = $_SESSION['admin_id'];
+                $query = "UPDATE tbl_admin SET password = :password WHERE id = :id";
+                $stmt = $conn->prepare($query);
+                $stmt->bindParam(':password', $new_password, PDO::PARAM_STR);
+                $stmt->bindParam(':id', $admin_id, PDO::PARAM_INT);
 
-            // Prepare the SQL query to update the password
-            $query = "UPDATE tbl_admin SET password = :password WHERE id = :admin_id";
-            $stmt = $conn->prepare($query);
-            $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
-            $stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
-
-            // Execute the query
-            if ($stmt->execute()) {
-                // Success
-                $_SESSION['success'] = "Password successfully updated!";
+                if ($stmt->execute()) {
+                    $_SESSION['success'] = "Password successfully updated!";
+                } else {
+                    $_SESSION['error'] = "There was an error updating the password.";
+                }
             } else {
-                // Error during update
-                $_SESSION['errors'] = "There was an error updating the password.";
+                $_SESSION['error'] = "Session expired. Please log in again.";
             }
         } else {
-            // Passwords don't match
-            $_SESSION['errors'] = "The passwords do not match!";
+            $_SESSION['error'] = "The passwords do not match!";
         }
     } else {
-        // One or both password fields are empty
-        $_SESSION['errors'] = "Please fill in both the new password and confirm password fields.";
+        $_SESSION['error'] = "Please fill in both the new password and confirm password fields.";
     }
 }
 ?>
+
+
 
 
 <div class="modal fade" id="changePassModal" tabindex="-1" role="dialog" style="display: none;">

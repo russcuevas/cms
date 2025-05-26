@@ -2,6 +2,11 @@
 session_start();
 include '../database/connection.php';
 
+if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../login.php');
+    exit();
+}
+
 $stmt = $conn->query("SELECT * FROM tbl_clients WHERE is_vip = 0 ORDER BY id DESC");
 $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

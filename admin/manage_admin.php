@@ -1,5 +1,11 @@
 <?php
+session_start();
 include '../database/connection.php';
+
+if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../login.php');
+    exit();
+}
 
 // FETCH ADMIN
 $stmt = $conn->prepare("SELECT * FROM tbl_admin");
@@ -208,19 +214,7 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <!-- END ADD MODAL -->
 
                             <div class="table-responsive">
-                                <?php if (isset($_SESSION['success'])) : ?>
-                                    <div class="alert alert-success" role="alert">
-                                        <?= $_SESSION['success']; ?>
-                                    </div>
-                                    <?php unset($_SESSION['success']);
-                                    ?>
-                                <?php elseif (isset($_SESSION['errors'])) : ?>
-                                    <div class="alert alert-danger" role="alert">
-                                        <?= $_SESSION['errors']; ?>
-                                    </div>
-                                    <?php unset($_SESSION['errors']);
-                                    ?>
-                                <?php endif; ?>
+
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
@@ -296,6 +290,25 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="js/pages/tables/jquery-datatable.js"></script>
     <!-- SweetAlert Plugin Js -->
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>

@@ -1,5 +1,11 @@
 <?php
+session_start();
 include '../database/connection.php';
+
+if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../login.php');
+    exit();
+}
 
 $remark_id = $_GET['id'] ?? null;
 if ($remark_id) {
@@ -46,7 +52,8 @@ if (!$remark) {
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
-
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
     <style>
@@ -166,7 +173,10 @@ if (!$remark) {
                                         <img src="<?= $filePath ?>" class="img-fluid rounded" alt="Remark Image" style="max-width: 300px;">
 
                                     <?php elseif ($fileExtension === 'pdf'): ?>
-                                        <iframe src="<?= $filePath ?>" width="100%" height="500px"></iframe>
+                                        <a style="margin-bottom: 10px;" href="<?= $filePath ?>" download class="btn bg-red">
+                                            CLICK HERE TO DOWNLOAD
+                                        </a>
+                                        <iframe src="<?= $filePath ?>" width="100%" height="1250px"></iframe>
 
                                     <?php elseif (in_array($fileExtension, ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'])): ?>
                                         <a href="<?= $filePath ?>" target="_blank" class="btn btn-primary">
@@ -174,7 +184,7 @@ if (!$remark) {
                                         </a>
 
                                     <?php else: ?>
-                                        <a href="<?= $filePath ?>" download class="btn btn-secondary">
+                                        <a href="<?= $filePath ?>" download class="btn bg-red">
                                             Download File
                                         </a>
                                     <?php endif; ?>
@@ -227,7 +237,27 @@ if (!$remark) {
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
-
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
     <!-- SHOW VIP -->
     <script>
         document.getElementById('vip_select').addEventListener('change', function() {

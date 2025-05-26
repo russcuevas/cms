@@ -7,8 +7,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <ul class="list">
             <li class="header" style="font-size: 12px">
                 WELCOME <br>
-                RUSSEL VINCENT CUEVAS <br>
-                ADMINISTRATOR
+                <span style="color: goldenrod;"><?php echo strtoupper($_SESSION['fullname']); ?></span> <br>
+                <span style="color: goldenrod;">ADMINISTRATOR</span>
             </li>
             <li class="<?= ($currentPage == 'index.php') ? 'active' : '' ?>">
                 <a href="index.php">

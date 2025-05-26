@@ -1,5 +1,11 @@
 <?php
+session_start();
 include '../database/connection.php';
+
+if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../login.php');
+    exit();
+}
 
 $id = $_GET['id'] ?? null;
 $client = null;
@@ -48,7 +54,8 @@ if ($id) {
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
-
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
     <style>
@@ -204,19 +211,7 @@ if ($id) {
                         <div class="body">
                             <!-- END ADD MODAL -->
                             <div class="table-responsive">
-                                <?php if (isset($_SESSION['success'])) : ?>
-                                    <div class="alert alert-success" role="alert">
-                                        <?= $_SESSION['success']; ?>
-                                    </div>
-                                    <?php unset($_SESSION['success']);
-                                    ?>
-                                <?php elseif (isset($_SESSION['errors'])) : ?>
-                                    <div class="alert alert-danger" role="alert">
-                                        <?= $_SESSION['errors']; ?>
-                                    </div>
-                                    <?php unset($_SESSION['errors']);
-                                    ?>
-                                <?php endif; ?>
+
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
@@ -281,7 +276,27 @@ if ($id) {
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
     <script src="js/pages/tables/jquery-datatable.js"></script>
-
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
 

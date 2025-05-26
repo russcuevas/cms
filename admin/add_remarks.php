@@ -2,6 +2,16 @@
 session_start();
 include '../database/connection.php';
 
+if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../login.php');
+    exit();
+}
+
+if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../login.php');
+    exit();
+}
+
 // GET THE CLIENT ID
 $id = $_GET['id'];
 $query = $conn->prepare("SELECT * FROM tbl_clients WHERE id = ?");

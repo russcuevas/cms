@@ -1,3 +1,76 @@
+<?php
+session_start();
+include('database/connection.php');
+
+if (isset($_SESSION['admin_id'])) {
+    if ($_SESSION['role'] === 'admin') {
+        header('Location: admin/index.php');
+    } elseif ($_SESSION['role'] === 'staff') {
+        header('Location: staff/index.php');
+    }
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!empty($_POST['email']) && !empty($_POST['password'])) {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
+        // 1. Check in tbl_admin
+        $query_admin = "SELECT * FROM tbl_admin WHERE email = :email";
+        $stmt_admin = $conn->prepare($query_admin);
+        $stmt_admin->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt_admin->execute();
+
+        if ($stmt_admin->rowCount() == 1) {
+            $admin = $stmt_admin->fetch(PDO::FETCH_ASSOC);
+            if ($password === $admin['password']) {
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['email'] = $admin['email'];
+                $_SESSION['fullname'] = $admin['fullname'];
+                $_SESSION['role'] = $admin['role'];
+
+                if ($admin['role'] === 'admin') {
+                    header('Location: admin/index.php');
+                    exit();
+                }
+            }
+        }
+
+        // 2. Check in tbl_staff if not found in tbl_admin
+        $query_staff = "SELECT * FROM tbl_staff WHERE email = :email";
+        $stmt_staff = $conn->prepare($query_staff);
+        $stmt_staff->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt_staff->execute();
+
+        if ($stmt_staff->rowCount() == 1) {
+            $staff = $stmt_staff->fetch(PDO::FETCH_ASSOC);
+            if ($password === $staff['password']) {
+                $_SESSION['admin_id'] = $staff['id'];
+                $_SESSION['email'] = $staff['email'];
+                $_SESSION['fullname'] = $staff['fullname'];
+                $_SESSION['role'] = $staff['role'];
+
+                if ($staff['role'] === 'staff') {
+                    header('Location: staff/index.php');
+                    exit();
+                }
+            }
+        }
+
+        $_SESSION['error'] = 'Invalid email or password';
+        header('location: login.php');
+        exit();
+    } else {
+        $_SESSION['error'] = 'Email and password are required.';
+        header('location: login.php');
+        exit();
+    }
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html>
 
@@ -10,6 +83,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="admin/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="admin/css/style.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="admin/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
     <style>
         body {
             font-family: 'Poppins', sans-serif !important;
@@ -41,7 +116,7 @@
 
         <div class="card">
             <div class="body">
-                <form id="sign_in" method="POST">
+                <form action="" id="sign_in" method="POST">
                     <div class="msg"><span style="font-size: 30px;">Login</span></div>
 
                     <div class="input-group">
@@ -74,6 +149,27 @@
     <script src="admin/plugins/jquery-validation/jquery.validate.js"></script>
     <script src="admin/js/admin.js"></script>
     <script src="admin/js/pages/examples/sign-in.js"></script>
+    <!-- SweetAlert Plugin Js -->
+    <script src="admin/plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success'])): ?>
+            swal({
+                type: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            swal({
+                type: 'error',
+                title: 'Oops...',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK'
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 
 </html>
