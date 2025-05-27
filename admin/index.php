@@ -7,11 +7,6 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
-}
-
 // GET THE STAFF
 $get_total_staff = "SELECT COUNT(*) AS total_staff FROM `tbl_staff`";
 $stmt_total_staff = $conn->prepare($get_total_staff);

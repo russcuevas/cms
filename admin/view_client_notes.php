@@ -182,7 +182,6 @@ if (!$remark) {
                                         <a href="<?= $filePath ?>" target="_blank" class="btn btn-primary">
                                             View/Download <?= strtoupper($fileExtension) ?> File
                                         </a>
-
                                     <?php else: ?>
                                         <a href="<?= $filePath ?>" download class="btn bg-red">
                                             Download File

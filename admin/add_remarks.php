@@ -7,11 +7,6 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
-}
-
 // GET THE CLIENT ID
 $id = $_GET['id'];
 $query = $conn->prepare("SELECT * FROM tbl_clients WHERE id = ?");
@@ -22,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clientId = $_POST['client_id'] ?? null;
     $remarks = $_POST['description'] ?? '';
     $staffName = $_POST['fullname'] ?? '';
-    $createdAt = date('Y-m-d H:i:s');
 
     $photoName = '';
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
@@ -39,16 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt = $conn->prepare("INSERT INTO tbl_remarks (client_id, remarks, added_by, photo, created_at) 
-                           VALUES (:client_id, :remarks, :added_by, :photo, :created_at)");
+                           VALUES (:client_id, :remarks, :added_by, :photo, NOW())");
     $stmt->execute([
         ':client_id' => $clientId,
         ':remarks' => $remarks,
         ':added_by' => $staffName,
-        ':photo' => $photoName,
-        ':created_at' => $createdAt
+        ':photo' => $photoName
     ]);
     $_SESSION['success'] = "Remarks saved successfully!";
 }
+
 
 
 ?>
