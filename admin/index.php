@@ -39,6 +39,16 @@ $result_total_vip = $stmt_total_vip->fetch(PDO::FETCH_ASSOC);
 $total_vip = $result_total_vip['total_vip'];
 // END GET TOTAL VIP
 
+date_default_timezone_set('Asia/Manila');
+$today = date('Y-m-d');  // current date in Asia/Manila timezone
+
+
+// FETCH APPOINTMENT TODAY
+$stmt = $conn->prepare("SELECT * FROM tbl_appointment WHERE DATE(appointment_datetime) = ?");
+$stmt->execute([$today]);
+$appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// END FETCH APPOINTMENT TODAY
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -64,7 +74,8 @@ $total_vip = $result_total_vip['total_vip'];
 
     <!-- Animation Css -->
     <link href="plugins/animate-css/animate.css" rel="stylesheet" />
-
+    <!-- JQuery DataTable Css -->
+    <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
     <!-- Morris Chart Css-->
     <link href="plugins/morrisjs/morris.css" rel="stylesheet" />
 
@@ -76,6 +87,8 @@ $total_vip = $result_total_vip['total_vip'];
     <link href="css/themes/all-themes.css" rel="stylesheet" />
     <!-- Sweetalert Css -->
     <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -212,6 +225,55 @@ $total_vip = $result_total_vip['total_vip'];
                 </div>
             </div>
             <!-- #END# Widgets -->
+
+            <div class="row clearfix">
+                <!-- LEFT COLUMN - Appointments -->
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                APPOINTMENT FOR TODAY
+                                <br>
+                                <span style="color: red;" id="runningDateTime"></span>
+                            </h2>
+                        </div>
+                        <div class="body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Fullname</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($appointments as $appointment): ?>
+                                            <tr>
+                                                <td><?php echo htmlspecialchars($appointment['fullname']) ?></td>
+                                                <td><?php echo htmlspecialchars($appointment['remarks']) ?></td>
+                                            </tr>
+                                        <?php endforeach ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- RIGHT COLUMN - Calendar -->
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>ADD APPOINTMENT</h2>
+                        </div>
+                        <div class="body">
+                            <div id='calendar'></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -251,14 +313,181 @@ $total_vip = $result_total_vip['total_vip'];
 
     <!-- Sparkline Chart Plugin Js -->
     <script src="plugins/jquery-sparkline/jquery.sparkline.js"></script>
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="plugins/jquery-datatable/jquery.dataTables.js"></script>
+    <script src="plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
+    <script src="plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
 
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
+    <script>
+        $(function() {
+            $('.js-basic-example').DataTable({
+                responsive: true,
+                search: false
+            });
+
+            $('.js-exportable').DataTable({
+                dom: 'Bfrtip',
+                responsive: true,
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        });
+    </script>
     <script src="js/pages/index.js"></script>
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
-    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: 500,
+                dateClick: function(info) {
+                    swal({
+                        title: "Add Appointment",
+                        content: createCustomForm(info.dateStr), // pass date here
+                        buttons: {
+                            cancel: true,
+                            confirm: {
+                                text: "Save",
+                                closeModal: false
+                            }
+                        }
+                    }).then((value) => {
+                        if (value) {
+                            const fullname = document.getElementById('swal-fullname').value;
+                            const remarks = document.getElementById('swal-remarks').value;
+
+                            if (!fullname || !remarks) {
+                                swal("Error", "Please fill all fields.", "error");
+                                return;
+                            }
+
+                            const data = {
+                                fullname: fullname,
+                                remarks: remarks,
+                                appointment_datetime: info.dateStr + ' ' + new Date().toTimeString().split(' ')[0]
+                            };
+
+                            // Send to PHP via AJAX
+                            $.ajax({
+                                url: 'save_appointment.php',
+                                method: 'POST',
+                                data: data,
+                                success: function(response) {
+                                    if (response === 'success') {
+                                        swal("Saved!", "Appointment has been added.", "success")
+                                            .then(() => location.reload());
+                                    } else {
+                                        swal("Error!", "Something went wrong.", "error");
+                                    }
+                                }
+                            });
+                        }
+                    });
+                },
+            });
+            calendar.render();
+
+            function formatDate(dateStr) {
+                const months = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const dateObj = new Date(dateStr);
+                const monthName = months[dateObj.getMonth()];
+                const day = dateObj.getDate();
+                const year = dateObj.getFullYear();
+                return `${monthName} ${day}, ${year}`;
+            }
+
+            function createCustomForm(dateStr) {
+                const wrapper = document.createElement("div");
+
+                const formattedDate = formatDate(dateStr);
+
+                const dateDisplay = document.createElement("div");
+                dateDisplay.textContent = "APPOINTMENT DATE FOR : " + formattedDate;
+                dateDisplay.style.fontWeight = "bold";
+                dateDisplay.style.marginBottom = "15px";
+                wrapper.appendChild(dateDisplay);
+
+                function createRow(labelText, inputElement) {
+                    const row = document.createElement("div");
+                    row.style.display = "flex";
+                    row.style.alignItems = "center";
+                    row.style.marginBottom = "15px";
+
+                    const label = document.createElement("label");
+                    label.textContent = labelText;
+                    label.style.width = "80px";
+                    label.style.marginRight = "10px";
+                    label.style.textAlign = "right";
+                    label.style.fontWeight = "bold";
+
+                    row.appendChild(label);
+                    row.appendChild(inputElement);
+
+                    return row;
+                }
+
+                const nameInput = document.createElement("input");
+                nameInput.setAttribute("id", "swal-fullname");
+                nameInput.setAttribute("class", "swal-content__input");
+                nameInput.style.flex = "1";
+
+                const remarksInput = document.createElement("input");
+                remarksInput.setAttribute("id", "swal-remarks");
+                remarksInput.setAttribute("class", "swal-content__input");
+                remarksInput.style.flex = "1";
+
+                wrapper.appendChild(createRow("Fullname:", nameInput));
+                wrapper.appendChild(createRow("Remarks:", remarksInput));
+
+                return wrapper;
+            }
+
+
+        });
+    </script>
+
+    <script>
+        function updateDateTime() {
+            const options = {
+                timeZone: 'Asia/Manila',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+
+            const now = new Date();
+            const formatter = new Intl.DateTimeFormat('en-US', options);
+            const formattedDateTime = formatter.format(now);
+
+            document.getElementById('runningDateTime').textContent = formattedDateTime;
+        }
+
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+
+
     <script>
         <?php if (isset($_SESSION['success'])): ?>
             swal({

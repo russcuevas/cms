@@ -31,6 +31,11 @@ photo -> nullable
 created_at
 updated_at
 
+tbl_appointment
+fullname
+remarks
+appointment_date
+
 
 CREATE TABLE tbl_admin (
     id INT AUTO_INCREMENT PRIMARY KEY,
