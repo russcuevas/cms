@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $birthday = htmlspecialchars($_POST['birthday']);
     $is_vip = htmlspecialchars($_POST['is_vip']);
     $vip = isset($_POST['vip']) ? htmlspecialchars($_POST['vip']) : null;
+    $valid_until = isset($_POST['valid_until']) ? htmlspecialchars($_POST['valid_until']) : null;
 
     $first_name = $conn->quote($first_name);
     $last_name = $conn->quote($last_name);
@@ -21,9 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $birthday = $conn->quote($birthday);
     $is_vip = (int) $is_vip;
     $vip_value = $vip !== null ? $conn->quote($vip) : 'NULL';
+    $valid_until_value = $valid_until !== null ? $conn->quote($valid_until) : 'NULL';
 
-    $sql = "INSERT INTO tbl_clients (first_name, last_name, mobile, birthday, is_vip, vip)
-            VALUES ($first_name, $last_name, $mobile, $birthday, $is_vip, $vip_value)";
+    $sql = "INSERT INTO tbl_clients (first_name, last_name, mobile, birthday, is_vip, vip, valid_until)
+    VALUES ($first_name, $last_name, $mobile, $birthday, $is_vip, $vip_value, $valid_until_value)";
+
+
 
     if ($conn->exec($sql)) {
         $_SESSION['success'] = 'Client added successfully';
@@ -216,20 +220,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
-                                            <label class="form-label">VIP Type <span style="color: red;">*</span></label>
+                                            <label class="form-label">Client Type <span style="color: red;">*</span></label>
                                             <select class="form-control select-form" name="is_vip" id="vip_select" required>
-                                                <option value="" disabled selected>Choose VIP TYPE</option>
+                                                <option value="" disabled selected>Choose Client TYPE</option>
                                                 <option value="1">VIP</option>
-                                                <option value="0">Non-VIP</option>
+                                                <option value="2">Package</option>
+                                                <option value="3">Guest</option>
                                             </select>
                                         </div>
 
-                                        <div id="vip_number_group" class="form-group form-float" style="display: none;">
-                                            <div class="form-line">
-                                                <input type="number" class="form-control" name="vip">
-                                                <label class="form-label">VIP #</label>
+                                        <div id="vip_number_group" style="display: none;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="number" class="form-control" name="vip">
+                                                    <label class="form-label">VIP #</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="date" class="form-control" name="valid_until">
+                                                    <label class="form-label">VIP VALID UNTIL</label>
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
 
                                 </div>

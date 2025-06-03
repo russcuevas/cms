@@ -208,7 +208,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <label style="font-size: 20px !important;" class="form-label">Type:</label>
-                                            <label style="font-size: 20px !important;" class="form-label"><?= $client['is_vip'] ? 'VIP ' . htmlspecialchars($client['vip']) : 'Non-VIP' ?></label>
+                                            <label style="font-size: 20px !important;" class="form-label">
+                                                <?php
+                                                switch ($client['is_vip']) {
+                                                    case 1:
+                                                        echo 'VIP';
+                                                        break;
+                                                    case 2:
+                                                        echo 'Package';
+                                                        break;
+                                                    case 3:
+                                                        echo 'Guest';
+                                                        break;
+                                                    default:
+                                                        echo 'Non-VIP';
+                                                        break;
+                                                }
+                                                ?>
+                                            </label>
                                         </div>
                                     </div>
 

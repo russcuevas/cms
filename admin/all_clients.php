@@ -174,8 +174,34 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <td><?= htmlspecialchars($client['mobile']) ?></td>
                                                 <td><?= htmlspecialchars($client['birthday']) ?></td>
                                                 <td>
-                                                    <?= $client['is_vip'] ? 'VIP ' . htmlspecialchars($client['vip']) : 'Non-VIP' ?>
+                                                    <?php
+                                                    $today = new DateTime();
+                                                    $validUntil = new DateTime($client['valid_until'] ?? null);
+                                                    $createdAt = isset($client['created_at']) ? (new DateTime($client['created_at']))->format('Y-m-d') : 'N/A';
+
+                                                    switch ($client['is_vip']) {
+                                                        case 1:
+                                                            if ($validUntil && $validUntil >= $today) {
+                                                                $interval = $today->diff($validUntil)->days;
+                                                                echo "<span style='color: red';>VIP</span> at {$createdAt} <br> VALID UNTIL<br>({$interval} days)";
+                                                            } else {
+                                                                echo "VIP - EXPIRED";
+                                                            }
+                                                            break;
+                                                        case 2:
+                                                            echo 'Package';
+                                                            break;
+                                                        case 3:
+                                                            echo 'Guest';
+                                                            break;
+                                                        default:
+                                                            echo 'No-Type';
+                                                            break;
+                                                    }
+                                                    ?>
                                                 </td>
+
+
 
                                                 <td><?= htmlspecialchars($client['created_at']) ?></td>
                                                 <td><?= htmlspecialchars($client['updated_at']) ?></td>
