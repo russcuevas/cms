@@ -106,7 +106,6 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
                     <div>
                         <div style="font-size: 15px; color: goldenrod;">THE PRETTY YOU AESTHETIC CLINIC</div>
-                        <div style="font-size: 10px; color: goldenrod;">GENERAL TRIAS</div>
                     </div>
                 </a>
 

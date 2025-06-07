@@ -7,11 +7,9 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-// FETCH ADMIN
-$stmt = $conn->prepare("SELECT * FROM tbl_admin");
-$stmt->execute();
-$admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// END FETCH ADMIN
+$stmt = $conn->query("SELECT * FROM tbl_clients WHERE is_vip = 2 ORDER BY id DESC");
+$clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -40,12 +38,11 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- JQuery DataTable Css -->
     <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 
-    <!-- Sweetalert Css -->
-    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
-
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
@@ -132,7 +129,7 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Manage Admin
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> GUEST CLIENTS
                     </li>
                 </ol>
             </div>
@@ -142,108 +139,79 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card">
                         <div class="header">
                             <h2>
-                                LIST OF ADMINISTRATOR
+                                LIST OF GUEST CLIENTS
                             </h2>
                         </div>
                         <div class="body">
                             <div>
-                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" data-toggle="modal" data-target="#addAdminModal">+ ADD ADMIN</button>
-                            </div>
-
-                            <!-- ADD MODAL -->
-                            <div class="modal fade" id="addAdminModal" tabindex="-1" role="dialog" style="display: none;">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="defaultModalLabel">Add Admin</h4>
-                                        </div>
-                                        <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
-                                            <form id="add_admin_validation" method="POST" style="margin-top:10px;">
-                                                <!-- Fullname -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="text" class="form-control" name="fullname" required>
-                                                        <label class="form-label">Fullname</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Mobile -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="number" class="form-control" name="mobile" required>
-                                                        <label class="form-label">Mobile</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Birthday -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="date" class="form-control" name="birthday" required>
-                                                        <label class="form-label">Birthday</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Email -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="email" class="form-control" name="email" required>
-                                                        <label class="form-label">Email</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Password -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="password" class="form-control" name="password" maxlength="12" minlength="6"
-                                                            required>
-                                                        <label class="form-label">Password</label>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Footer Buttons -->
-                                                <div class="modal-footer">
-                                                    <button class="btn bg-teal waves-effect" name="add_admin_btn" type="submit">SAVE</button>
-                                                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                                <p>Filter by:</p>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='add_customer.php'">+ ADD CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='all_clients.php'">ALL CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='vip_clients.php'">VIP CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='package_clients.php'">PACKAGE CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='guest_clients.php'">GUEST CLIENTS</button>
                             </div>
                             <!-- END ADD MODAL -->
-
                             <div class="table-responsive">
-
                                 <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                         <tr>
+                                            <th>#</th>
                                             <th>Fullname</th>
-                                            <th>Email</th>
                                             <th>Mobile</th>
-                                            <th>Birthday</th>
+                                            <th>Date of Birth</th>
+                                            <th>VIP Status</th>
                                             <th>Created At</th>
                                             <th>Updated At</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($admins as $admin): ?>
+                                        <?php foreach ($clients as $index => $client): ?>
                                             <tr>
-                                                <td><?php echo $admin['fullname'] ?></td>
-                                                <td><?php echo $admin['email'] ?></td>
-                                                <td><?php echo $admin['mobile'] ?></td>
-                                                <td><?php echo $admin['birthday'] ?></td>
-                                                <td><?php echo $admin['created_at'] ?></td>
-                                                <td><?php echo $admin['updated_at'] ?></td>
+                                                <td><?= $index + 1 ?></td>
+                                                <td><?= htmlspecialchars($client['first_name'] . ' ' . $client['last_name']) ?></td>
+                                                <td><?= htmlspecialchars($client['mobile']) ?></td>
+                                                <td><?= htmlspecialchars($client['birthday']) ?></td>
                                                 <td>
-                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#edit_<?php echo $admin['id']; ?>">Edit</a>
-                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#delete_<?php echo $admin['id']; ?>">Remove</a>
-                                                    <!-- MODAL -->
-                                                    <?php include 'modal/manage_admin.php' ?>
-                                                    <!-- END MODAL -->
+                                                    <?=
+                                                    $client['is_vip'] == 1
+                                                        ? 'VIP ' . htmlspecialchars($client['vip'])
+                                                        : ($client['is_vip'] == 2
+                                                            ? 'Package'
+                                                            : 'Non-VIP')
+                                                    ?>
+                                                </td>
+
+                                                <td><?= htmlspecialchars($client['created_at']) ?></td>
+                                                <td><?= htmlspecialchars($client['updated_at']) ?></td>
+                                                <td>
+                                                    <a style="margin-bottom: 5px;" href="edit_client_information.php?client_id=<?php echo urlencode($client['id']); ?>" class="btn bg-teal waves-effect">EDIT CLIENT INFORMATION</a> <br>
+                                                    <a style="margin-bottom: 5px;" href="view_remarks.php?id=<?= urlencode($client['id']) ?>" class="btn bg-teal waves-effect">VIEW REMARKS</a>
+                                                    <a style="margin-bottom: 5px;" href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#delete_<?php echo $client['id']; ?>">REMOVE</a>
+
+                                                    <div class="modal fade" id="delete_<?= $client['id']; ?>" tabindex="-1" role="dialog">
+                                                        <div class="modal-dialog" role="document">
+                                                            <form action="functions/delete_client.php" method="POST">
+                                                                <input type="hidden" name="id" value="<?= $client['id']; ?>">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h4 class="modal-title" id="defaultModalLabel">Confirm Delete</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        Are you sure you want to delete <strong><?= htmlspecialchars($client['first_name'] . ' ' . $client['last_name']); ?></strong>?
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="submit" name="delete" class="btn bg-teal waves-effect">YES, DELETE</button>
+                                                                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">CANCEL</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
-                                        <?php endforeach ?>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -251,7 +219,7 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </div>
-            <!-- END ADMIN MANAGEMENT -->
+            <!-- #END# Basic Examples -->
         </div>
     </section>
 
@@ -289,6 +257,9 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="js/pages/tables/jquery-datatable.js"></script>
     <!-- SweetAlert Plugin Js -->
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
+
+    <!-- Demo Js -->
+    <script src="js/demo.js"></script>
     <script>
         <?php if (isset($_SESSION['success'])): ?>
             swal({
@@ -308,11 +279,6 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
     </script>
-
-    <!-- Demo Js -->
-    <script src="js/demo.js"></script>
-    <script src="ajax/manage_admin.js"></script>
-    <!-- END ADD ADMIN VALIDATION -->
 </body>
 
 </html>

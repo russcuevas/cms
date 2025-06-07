@@ -7,7 +7,7 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$stmt = $conn->query("SELECT * FROM tbl_clients WHERE is_vip = 0 ORDER BY id DESC");
+$stmt = $conn->query("SELECT * FROM tbl_clients WHERE is_vip = 3 ORDER BY id DESC");
 $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
@@ -105,7 +105,6 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
                     <div>
                         <div style="font-size: 15px; color: goldenrod;">THE PRETTY YOU AESTHETIC CLINIC</div>
-                        <div style="font-size: 10px; color: goldenrod;">GENERAL TRIAS</div>
                     </div>
                 </a>
 
@@ -130,7 +129,7 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <ol style="font-size: 15px;" class="breadcrumb breadcrumb-col-red">
                     <li><a href="index.php"><i style="font-size: 20px;" class="material-icons">home</i>
                             Dashboard</a></li>
-                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> Non-VIP Clients
+                    <li class="active"><i style="font-size: 20px;" class="material-icons">description</i> GUEST CLIENTS
                     </li>
                 </ol>
             </div>
@@ -140,7 +139,7 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card">
                         <div class="header">
                             <h2>
-                                LIST OF NON-VIP CLIENTS
+                                LIST OF GUEST CLIENTS
                             </h2>
                         </div>
                         <div class="body">
@@ -149,7 +148,8 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='add_customer.php'">+ ADD CLIENTS</button>
                                 <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='all_clients.php'">ALL CLIENTS</button>
                                 <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='vip_clients.php'">VIP CLIENTS</button>
-                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='non_vip_clients.php'">NON-VIP CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='package_clients.php'">PACKAGE CLIENTS</button>
+                                <button class="btn bg-red waves-effect" style="margin-bottom: 15px;" onclick="window.location.href ='guest_clients.php'">GUEST CLIENTS</button>
                             </div>
                             <!-- END ADD MODAL -->
                             <div class="table-responsive">
@@ -174,7 +174,13 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <td><?= htmlspecialchars($client['mobile']) ?></td>
                                                 <td><?= htmlspecialchars($client['birthday']) ?></td>
                                                 <td>
-                                                    <?= $client['is_vip'] ? 'VIP ' . htmlspecialchars($client['vip']) : 'Non-VIP' ?>
+                                                    <?=
+                                                    $client['is_vip'] == 1
+                                                        ? 'VIP ' . htmlspecialchars($client['vip'])
+                                                        : ($client['is_vip'] == 3
+                                                            ? 'Guest'
+                                                            : 'Non-VIP')
+                                                    ?>
                                                 </td>
 
                                                 <td><?= htmlspecialchars($client['created_at']) ?></td>

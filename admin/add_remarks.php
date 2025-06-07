@@ -143,7 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
                     <div>
                         <div style="font-size: 15px; color: goldenrod;">THE PRETTY YOU AESTHETIC CLINIC</div>
-                        <div style="font-size: 10px; color: goldenrod;">GENERAL TRIAS</div>
                     </div>
                 </a>
 
@@ -212,16 +211,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 <?php
                                                 switch ($client['is_vip']) {
                                                     case 1:
-                                                        echo 'VIP';
+                                                        echo "VIP #<span style='color: #555;'>" . htmlspecialchars($client['vip']) . "</span> - VALID UNTIL: <span style='color: #555;'>" . date('F j, Y', strtotime($client['valid_until'])) . "</span>";
                                                         break;
                                                     case 2:
-                                                        echo 'Package';
+                                                        echo "<strong style='color: blue;'>Package</strong>";
                                                         break;
                                                     case 3:
-                                                        echo 'Guest';
+                                                        echo "<strong style='color: gray;'>Guest</strong>";
                                                         break;
                                                     default:
-                                                        echo 'Non-VIP';
+                                                        echo "<strong style='color: red;'>No-TYPE</strong>";
                                                         break;
                                                 }
                                                 ?>

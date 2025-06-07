@@ -28,7 +28,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <span>Manage Staff</span>
                 </a>
             </li>
-            <li class="<?= in_array($currentPage, ['all_clients.php', 'vip_clients.php', 'non_vip_clients.php', 'edit_client_information.php', 'view_client_notes.php', 'view_remarks.php', 'add_remarks.php', 'add_customer.php', 'view_client_notes.php']) ? 'active' : '' ?>">
+            <li class="<?= in_array($currentPage, ['all_clients.php', 'vip_clients.php', 'guest_clients.php', 'package_clients.php', 'edit_client_information.php', 'view_client_notes.php', 'view_remarks.php', 'add_remarks.php', 'add_customer.php', 'view_client_notes.php']) ? 'active' : '' ?>">
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">person</i>
                     <span>Clients</span>
@@ -40,8 +40,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <li class="<?= ($currentPage == 'vip_clients.php') ? 'active' : '' ?>">
                         <a href="vip_clients.php">VIP Clients</a>
                     </li>
-                    <li class="<?= ($currentPage == 'non_vip_clients.php') ? 'active' : '' ?>">
-                        <a href="non_vip_clients.php">Non VIP Clients</a>
+                    <li class="<?= ($currentPage == 'package_clients.php') ? 'active' : '' ?>">
+                        <a href="package_clients.php">Package Clients</a>
+                    </li>
+                    <li class="<?= ($currentPage == 'guest_clients.php') ? 'active' : '' ?>">
+                        <a href="guest_clients.php">Guest Clients</a>
                     </li>
                 </ul>
             </li>

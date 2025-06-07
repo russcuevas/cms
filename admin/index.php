@@ -24,12 +24,20 @@ $total_client = $result_total_client['total_client'];
 // END GET TOTAL CLIENT
 
 // GET THE NON VIP
-$get_total_non_vip = "SELECT COUNT(*) AS total_non_vip FROM `tbl_clients` WHERE is_vip = 0";
-$stmt_total_non_vip = $conn->prepare($get_total_non_vip);
-$stmt_total_non_vip->execute();
-$result_total_non_vip = $stmt_total_non_vip->fetch(PDO::FETCH_ASSOC);
-$total_non_vip = $result_total_non_vip['total_non_vip'];
+$get_total_guest = "SELECT COUNT(*) AS total_guest FROM `tbl_clients` WHERE is_vip = 3";
+$stmt_total_guest = $conn->prepare($get_total_guest);
+$stmt_total_guest->execute();
+$result_total_guest = $stmt_total_guest->fetch(PDO::FETCH_ASSOC);
+$total_guest = $result_total_guest['total_guest'];
 // END GET TOTAL NON VIP
+
+// GET THE VIP
+$get_total_package = "SELECT COUNT(*) AS total_package FROM `tbl_clients` WHERE is_vip = 2";
+$stmt_total_package = $conn->prepare($get_total_package);
+$stmt_total_package->execute();
+$result_total_package = $stmt_total_package->fetch(PDO::FETCH_ASSOC);
+$total_package = $result_total_package['total_package'];
+// END GET TOTAL VIP
 
 // GET THE VIP
 $get_total_vip = "SELECT COUNT(*) AS total_vip FROM `tbl_clients` WHERE is_vip = 1";
@@ -148,7 +156,6 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
                     <div>
                         <div style="font-size: 15px; color: goldenrod;">THE PRETTY YOU AESTHETIC CLINIC</div>
-                        <div style="font-size: 10px; color: goldenrod;">GENERAL TRIAS</div>
                     </div>
                 </a>
 
@@ -176,7 +183,7 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <!-- Widgets -->
             <div class="row clearfix">
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='manage_staff.php';">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" onclick="window.location.href='manage_staff.php';">
                     <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
                         <div class="icon">
                             <i class="material-icons">badge</i>
@@ -187,7 +194,7 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='all_clients.php';">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" onclick="window.location.href='all_clients.php';">
                     <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
                         <div class="icon">
                             <i class="material-icons">person</i>
@@ -199,27 +206,41 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='non_vip_clients.php';">
-                    <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
-                        <div class="icon">
-                            <i class="material-icons">unpublished</i>
-                        </div>
-                        <div class="content">
-                            <div class="text">TOTAL NON VIP</div>
-                            <div class="number"><?php echo $total_non_vip ?></div>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="window.location.href='vip_clients.php';">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" onclick="window.location.href='guest_clients.php';">
                     <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
                         <div class="icon">
                             <i class="material-icons">verified</i>
                         </div>
                         <div class="content">
-                            <div class="text">TOTAL VIP</div>
+
+                            <div class="text">TOTAL VIP CLIENTS</div>
                             <div class="number"><?php echo $total_vip ?></div>
 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" onclick="window.location.href='package_clients.php';">
+                    <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
+                        <div class="icon">
+                            <i class="material-icons">unpublished</i>
+                        </div>
+                        <div class="content">
+                            <div class="text">TOTAL PACKAGE CLIENTS</div>
+                            <div class="number"><?php echo $total_package ?></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" onclick="window.location.href='guest_clients.php';">
+                    <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
+                        <div class="icon">
+                            <i class="material-icons">unpublished</i>
+                        </div>
+                        <div class="content">
+                            <div class="text">TOTAL GUEST CLIENTS</div>
+                            <div class="number"><?php echo $total_guest ?></div>
                         </div>
                     </div>
                 </div>

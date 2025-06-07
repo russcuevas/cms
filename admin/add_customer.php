@@ -137,7 +137,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
                     <div>
                         <div style="font-size: 15px; color: goldenrod;">THE PRETTY YOU AESTHETIC CLINIC</div>
-                        <div style="font-size: 10px; color: goldenrod;">GENERAL TRIAS</div>
                     </div>
                 </a>
 
@@ -176,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h2>ADD CLIENTS</h2>
                         </div>
                         <div class="body">
-                            <form id="add_customer_validation" method="POST" style="margin-top: 20px;">
+                            <form id="add_customer_validation" method="POST" style="margin-top: 20px;" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
@@ -216,7 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 <div class="row">
                                     <div class="col-md-6">
-
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
@@ -243,9 +241,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="file" class="form-control" name="medical_history">
+                                                <label class="form-label">UPLOAD MEDICAL HISTORY FORM</label>
+                                            </div>
+                                        </div>
 
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="file" class="form-control" name="consent_waiver">
+                                                <label class="form-label">UPLOAD CONSENT WAIVER</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="file" class="form-control" name="vip_t&c">
+                                                <label class="form-label">UPLOAD VIP TERMS AND CONDITION</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="file" class="form-control" name="treatment_form">
+                                                <label class="form-label">UPLOAD TREATMENT PACKAGE FORM</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="text-right">

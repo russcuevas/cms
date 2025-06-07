@@ -21,17 +21,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mobile = htmlspecialchars($_POST['mobile']);
     $birthday = htmlspecialchars($_POST['birthday']);
     $is_vip = (int) $_POST['is_vip'];
+    $valid_until = isset($_POST['valid_until']) ? htmlspecialchars($_POST['valid_until']) : null;
 
-    // If non-VIP now, clear the vip field regardless of POST data
     if ($is_vip === 0) {
         $vip = null;
+        $valid_until = null;
     } else {
-        // VIP is set only if is_vip == 1, otherwise null
         $vip = isset($_POST['vip']) && $_POST['vip'] !== '' ? htmlspecialchars($_POST['vip']) : null;
     }
 
-    $stmt = $conn->prepare("UPDATE tbl_clients SET first_name = ?, last_name = ?, mobile = ?, birthday = ?, is_vip = ?, vip = ? WHERE id = ?");
-    if ($stmt->execute([$first_name, $last_name, $mobile, $birthday, $is_vip, $vip, $client_id])) {
+    $stmt = $conn->prepare("UPDATE tbl_clients SET first_name = ?, last_name = ?, mobile = ?, birthday = ?, is_vip = ?, vip = ?, valid_until = ? WHERE id = ?");
+    if ($stmt->execute([$first_name, $last_name, $mobile, $birthday, $is_vip, $vip, $valid_until, $client_id])) {
         $_SESSION['success'] = 'Client updated successfully';
     } else {
         $_SESSION['error'] = 'Error updating client';
@@ -149,7 +149,6 @@ if (!$client) {
                     <img id="bcas-logo" style="width:45px;display:inline;margin-right:10px;" src="img/logo.png" />
                     <div>
                         <div style="font-size: 15px; color: goldenrod;">THE PRETTY YOU AESTHETIC CLINIC</div>
-                        <div style="font-size: 10px; color: goldenrod;">GENERAL TRIAS</div>
                     </div>
                 </a>
 
@@ -229,27 +228,37 @@ if (!$client) {
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
-                                            <label class="form-label">VIP Type <span style="color: red;">*</span></label>
+                                            <label class="form-label">Client Type <span style="color: red;">*</span></label>
                                             <select class="form-control select-form" name="is_vip" id="vip_select" required>
-                                                <option value="" disabled>Choose VIP TYPE</option>
+                                                <option value="" disabled>Choose CLIENT TYPE</option>
                                                 <option value="1" <?php echo ($client['is_vip'] == 1) ? 'selected' : ''; ?>>VIP</option>
-                                                <option value="0" <?php echo ($client['is_vip'] == 0) ? 'selected' : ''; ?>>Non-VIP</option>
+                                                <option value="2" <?php echo ($client['is_vip'] == 2) ? 'selected' : ''; ?>>Package</option>
+                                                <option value="3" <?php echo ($client['is_vip'] == 3) ? 'selected' : ''; ?>>Guest</option>
+
                                             </select>
                                         </div>
 
-                                        <div id="vip_number_group" class="form-group form-float" style="display: <?php echo ($client['is_vip'] == 1) ? 'block' : 'none'; ?>;">
-                                            <div class="form-line">
-                                                <input type="number" class="form-control" name="vip" value="<?php echo htmlspecialchars($client['vip']); ?>">
-                                                <label class="form-label">VIP #</label>
+                                        <div id="vip_number_group" style="display: none;">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="number" class="form-control" name="vip" value="<?php echo htmlspecialchars($client['vip']); ?>">
+                                                    <label class="form-label">VIP #</label>
+                                                </div>
                                             </div>
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="date" class="form-control" name="valid_until" value="<?php echo htmlspecialchars($client['valid_until']) ?>">
+                                                    <label class="form-label">VIP VALID UNTIL</label>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="text-right">
-                                    <button class="btn bg-teal waves-effect" type="submit">UPDATE</button>
-                                    <button type="button" class="btn btn-link waves-effect" onclick="window.location.href = 'all_clients.php'">BACK</button>
-                                </div>
+                                    <div class="text-right">
+                                        <button class="btn bg-teal waves-effect" type="submit">UPDATE</button>
+                                        <button type="button" class="btn btn-link waves-effect" onclick="window.location.href = 'all_clients.php'">BACK</button>
+                                    </div>
                             </form>
                         </div>
                     </div>
@@ -348,16 +357,28 @@ if (!$client) {
             });
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
-
-        document.getElementById('vip_select').addEventListener('change', function() {
-            const vip_number_group = document.getElementById('vip_number_group');
-            if (this.value === '1') {
-                vip_number_group.style.display = 'block';
-            } else {
-                vip_number_group.style.display = 'none';
-            }
-        });
     </script>
+
+    <!-- SHOW VIP -->
+    <script>
+        function toggleVipFields() {
+            const vipSelect = document.getElementById('vip_select');
+            const vipNumberGroup = document.getElementById('vip_number_group');
+            if (vipSelect.value === '1') {
+                vipNumberGroup.style.display = 'block';
+            } else {
+                vipNumberGroup.style.display = 'none';
+            }
+        }
+
+        // On change
+        document.getElementById('vip_select').addEventListener('change', toggleVipFields);
+
+        // On page load
+        window.addEventListener('DOMContentLoaded', toggleVipFields);
+    </script>
+    <!-- END SHOW VIP -->
+
 
 </body>
 
