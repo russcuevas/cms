@@ -30,8 +30,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $vip = isset($_POST['vip']) && $_POST['vip'] !== '' ? htmlspecialchars($_POST['vip']) : null;
     }
 
-    $stmt = $conn->prepare("UPDATE tbl_clients SET first_name = ?, last_name = ?, mobile = ?, birthday = ?, is_vip = ?, vip = ?, valid_until = ? WHERE id = ?");
-    if ($stmt->execute([$first_name, $last_name, $mobile, $birthday, $is_vip, $vip, $valid_until, $client_id])) {
+    // Upload function: saves file using original filename (no timestamp)
+    function uploadFile($fileInputName, $targetDir = "../uploads/form_client/")
+    {
+        if (isset($_FILES[$fileInputName]) && $_FILES[$fileInputName]['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $_FILES[$fileInputName]['tmp_name'];
+            $originalName = basename($_FILES[$fileInputName]['name']);
+
+            // Sanitize filename (replace unsafe chars)
+            $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $originalName);
+
+            // Ensure directory exists
+            if (!is_dir($targetDir)) {
+                mkdir($targetDir, 0755, true);
+            }
+
+            $targetPath = $targetDir . $safeName;
+
+            if (move_uploaded_file($tmpName, $targetPath)) {
+                return $safeName; // return filename only
+            }
+        }
+        return null;
+    }
+
+    $medical_history = uploadFile('medical_history');
+    $consent_waiver = uploadFile('consent_waiver');
+    $vip_tc = uploadFile('vip_t&c');
+    $treatment_form = uploadFile('treatment_form');
+
+    // Fetch old filenames from DB to keep if no new file uploaded
+    $query = $conn->prepare("SELECT medical_history, consent_waiver, vip_t_c, treatment_form FROM tbl_clients WHERE id = ?");
+    $query->execute([$client_id]);
+    $existing = $query->fetch();
+
+    $medical_history = $medical_history !== null ? $medical_history : $existing['medical_history'];
+    $consent_waiver = $consent_waiver !== null ? $consent_waiver : $existing['consent_waiver'];
+    $vip_tc = $vip_tc !== null ? $vip_tc : $existing['vip_t_c'];
+    $treatment_form = $treatment_form !== null ? $treatment_form : $existing['treatment_form'];
+
+    // Prepare update statement
+    $stmt = $conn->prepare("UPDATE tbl_clients 
+        SET first_name = ?, last_name = ?, mobile = ?, birthday = ?, is_vip = ?, vip = ?, valid_until = ?, 
+            medical_history = ?, consent_waiver = ?, vip_t_c = ?, treatment_form = ? 
+        WHERE id = ?");
+
+    $success = $stmt->execute([
+        $first_name,
+        $last_name,
+        $mobile,
+        $birthday,
+        $is_vip,
+        $vip,
+        $valid_until,
+        $medical_history,
+        $consent_waiver,
+        $vip_tc,
+        $treatment_form,
+        $client_id
+    ]);
+
+    if ($success) {
         $_SESSION['success'] = 'Client updated successfully';
     } else {
         $_SESSION['error'] = 'Error updating client';
@@ -40,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: edit_client_information.php?client_id=' . $client_id);
     exit();
 }
+
 
 
 $stmt = $conn->prepare("SELECT * FROM tbl_clients WHERE id = ?");
@@ -183,7 +243,7 @@ if (!$client) {
                             <h2>Edit Client Information</h2>
                         </div>
                         <div class="body">
-                            <form id="edit_customer_validation" method="POST" style="margin-top: 20px;">
+                            <form id="edit_customer_validation" method="POST" style="margin-top: 20px;" enctype="multipart/form-data">
                                 <input type="hidden" name="client_id" value="<?php echo $client_id; ?>">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -254,6 +314,69 @@ if (!$client) {
 
                                         </div>
                                     </div>
+                                    <br>
+                                    <br>
+                                    <?php
+                                    $basePath = '../uploads/form_client/';
+                                    ?>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <!-- MEDICAL HISTORY -->
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="file" class="form-control" name="medical_history">
+                                                    <label class="form-label">EDIT FILE MEDICAL HISTORY FORM</label>
+                                                </div>
+                                                <?php if (!empty($client['medical_history'])): ?>
+                                                    <small>
+                                                        <a href="<?= $basePath . $client['medical_history'] ?>" target="_blank">View Current File</a>
+                                                    </small>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <!-- CONSENT WAIVER -->
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="file" class="form-control" name="consent_waiver">
+                                                    <label class="form-label">EDIT FILE CONSENT WAIVER</label>
+                                                </div>
+                                                <?php if (!empty($client['consent_waiver'])): ?>
+                                                    <small>
+                                                        <a href="<?= $basePath . $client['consent_waiver'] ?>" target="_blank">View Current File</a>
+                                                    </small>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <!-- VIP TERMS AND CONDITIONS -->
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="file" class="form-control" name="vip_t&c">
+                                                    <label class="form-label">EDIT FILE VIP TERMS AND CONDITION</label>
+                                                </div>
+                                                <?php if (!empty($client['vip_tc'])): ?>
+                                                    <small>
+                                                        <a href="<?= $basePath . $client['vip_tc'] ?>" target="_blank">View Current File</a>
+                                                    </small>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <!-- TREATMENT FORM -->
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="file" class="form-control" name="treatment_form">
+                                                    <label class="form-label">EDIT FILE TREATMENT PACKAGE FORM</label>
+                                                </div>
+                                                <?php if (!empty($client['treatment_form'])): ?>
+                                                    <small>
+                                                        <a href="<?= $basePath . $client['treatment_form'] ?>" target="_blank">View Current File</a>
+                                                    </small>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                     <div class="text-right">
                                         <button class="btn bg-teal waves-effect" type="submit">UPDATE</button>

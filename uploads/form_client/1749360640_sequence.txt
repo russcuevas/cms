@@ -1,0 +1,151 @@
+database
+
+SUPERADMIN/
+tbl_system_configuration
+smtp_email
+sms_info_bip
+
+ADMIN
+
+tbl_barangay
+barangay
+municipality - mataasnakahoy
+zip - 4223
+created_at
+updated_at
+created_by
+updated_by
+
+tbl_admin
+barangay_id -> foreign to tbl_barangay -> id
+username
+password
+email
+fullname
+contact_number
+position
+status
+created_at
+updated_at
+
+tbl_documents_requirements
+document_requirements
+
+tbl_documents
+requirements_id -> foreign to tbl_documents_requirements -> id
+document_name
+document_description
+document_fee
+created_at
+updated_at
+created_by
+updated_by
+
+tbl_client
+resident_id -> foreign to tbl_residents -> id
+first_name
+middle_name
+last_name
+suffix
+birthdate
+relationship
+address -> foreign to tbl_barangay -> id
+contact_number
+email
+gender
+valid_id -> nullable
+student_id -> nullable
+is_verified
+verified_by -> foreign to tbl_admin -> id
+created_at
+
+tbl_client_requirements
+resident_id -> foreign to tbl_residents -> id
+client_id -> foreign to tbl_client -> id
+document_id -> foreign to tbl_documents_requirements
+is_verified
+verified_by -> foreign to tbl_admin -> id
+verified_at
+
+
+tbl_documents_request
+request_number
+resident_id -> foreign to tbl_residents -> id
+client_id -> foreign to tbl_client -> id -> nullable null muna dahil fifill upan pa
+admin_id -> foreign to tbl_admin -> id -> nullable null muna tapos pag inedit saka mag uupdate
+document_id -> foreign to tbl_documents -> id
+request_date
+purpose
+total_price -> based on document_fee -> tbl_documents
+request_status -> For approval, Approved
+document_status -> Pending, Processing, To pick up, Completed
+processed_date
+processed_by
+remarks ->
+completed_at -> datetime
+
+tbl_announcement
+announcement_title
+announcement_content
+announcement_venue
+announcement_image
+publish_date
+expiry_date
+status
+created_at
+updated_at
+created_by
+updated_by
+
+CREATE TABLE tbl_emergency (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    admin_id INT,                         -- Who posted the update (FK to tbl_admin)
+    title VARCHAR(255),                   -- Title of the emergency (e.g., "Flood Alert")
+    description TEXT,                     -- Detailed update
+    attachment VARCHAR(255),              -- Optional image or document
+    status ENUM('active', 'resolved') DEFAULT 'active',  -- Current status
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (admin_id) REFERENCES tbl_admin(id)
+);
+
+
+
+tbl_feedback
+resident_id -> foreign to tbl_residents -> id
+subject
+message
+rating
+created_at
+
+USERS
+
+tbl_residents
+first_name
+middle_name
+last_name
+suffix
+barangay_address -> foreign to tbl_barangay -> id
+purok
+username
+password
+email
+valid_id
+phone_number
+is_approved
+created_at
+updated_at
+
+CREATE TABLE tbl_chats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    resident_id INT,
+    admin_id INT,
+    sender_type ENUM('resident', 'admin'),
+    message TEXT,
+    attachment VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (resident_id) REFERENCES tbl_residents(id),
+    FOREIGN KEY (admin_id) REFERENCES tbl_admin(id)
+);
+
+

@@ -180,7 +180,7 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     $createdAt = isset($client['created_at']) ? (new DateTime($client['created_at']))->format('Y-m-d') : 'N/A';
 
                                                     if ($client['is_vip'] == 1) {
-                                                        echo "<strong>VIP</strong> #" . htmlspecialchars($client['vip']) . "<br> at: {$createdAt}<br>";
+                                                        echo "<strong style='color: red;'>VIP</strong> #" . htmlspecialchars($client['vip']) . "<br> at: {$createdAt}<br>";
                                                         if ($validUntil >= $today) {
                                                             $interval = $today->diff($validUntil)->days;
                                                             echo "UNTIL: ({$interval} days remaining)";

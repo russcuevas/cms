@@ -230,6 +230,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 </div>
 
+                                <?php
+                                $basePath = '../uploads/form_client/';
+                                ?>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <!-- MEDICAL HISTORY -->
+                                        <div class="form-group form-float">
+                                            <label class="form-label">CLIENT MEDICAL HISTORY FORM : </label>
+                                            <?php if (!empty($client['medical_history'])): ?>
+                                                <small>
+                                                    <a href="<?= $basePath . $client['medical_history'] ?>" target="_blank">VIEW UPLOADED FILE</a>
+                                                </small>
+                                            <?php else: ?>
+                                                <small style="color: red;">NO UPLOADED FILE</small>
+                                            <?php endif; ?>
+                                            <br>
+
+                                            <label class="form-label">CLIENT VIP TERMS AND CONDITION FORM : </label>
+                                            <?php if (!empty($client['vip_tc'])): ?>
+                                                <small>
+                                                    <a href="<?= $basePath . $client['vip_tc'] ?>" target="_blank">View Current File</a>
+                                                </small>
+                                            <?php else: ?>
+                                                <small style="color: red;">NO UPLOADED FILE</small>
+                                            <?php endif; ?>
+                                            <br>
+
+                                            <label class="form-label">CLIENT FILE CONSENT WAIVER FORM : </label>
+                                            <?php if (!empty($client['consent_waiver'])): ?>
+                                                <small>
+                                                    <a href="<?= $basePath . $client['consent_waiver'] ?>" target="_blank">VIEW UPLOADED FILE</a>
+                                                </small>
+                                            <?php else: ?>
+                                                <small style="color: red;">NO UPLOADED FILE</small>
+                                            <?php endif; ?>
+                                            <br>
+
+                                            <label class="form-label">CLIENT FILE TREATMENT PACKAGE FORM : </label>
+                                            <?php if (!empty($client['treatment_form'])): ?>
+                                                <small>
+                                                    <a href="<?= $basePath . $client['treatment_form'] ?>" target="_blank">VIEW UPLOADED FILE</a>
+                                                </small>
+                                            <?php else: ?>
+                                                <small style="color: red;">NO UPLOADED FILE</small>
+                                            <?php endif; ?>
+
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="text-right">
                                     <a href="edit_client_information.php?client_id=<?php echo urlencode($client['id']); ?>" class="btn bg-teal waves-effect">EDIT CLIENT INFORMATION</a>
                                     <a href="view_remarks.php?id=<?= urlencode($client['id']) ?>" class="btn bg-teal waves-effect">VIEW REMARKS</a>

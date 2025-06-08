@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="images/UBlogo.png" type="image/png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UBAYBAYIN</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredericka+the+Great&family=Patrick+Hand&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Patrick Hand', 'Fredericka the Great', cursive;
+        }
+
+        body {
+            display: grid;
+            place-content: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-image: url('images/B.png') !important;
+            background-size: cover;
+            /* Ensures the background image covers the entire div */
+            background-position: center;
+            /* Centers the background image */
+        }
+
+        .flipbook {
+            width: 1000px;
+            height: 600px;
+        }
+
+        .flipbook .hard {
+            background-size: contain;
+            /* Ensures the entire image fits within the container */
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 300px;
+            height: 400px;
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+
+        }
+
+        .flipbook .hard small {
+            font-style: italic;
+            font-weight: lighter;
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        .flipbook .page {
+            background: white;
+            background-size: cover;
+            /* Ensures the background image covers the entire div */
+            background-position: center;
+            /* Centers the background image */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.11);
+            width: 100%;
+            height: 100%;
+        }
+
+        .page img {
+            width: 100%;
+            object-fit: contain;
+            margin: auto;
+        }
+
+        .flipbook .page small {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        small {
+            font-weight: bold;
+            font-size: 40px;
+            color: #333;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+
+        .matching-game {
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .item {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #000;
+            background-color: #FBFAB1;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        .item img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .item:hover {
+            background-color: #ddd;
+        }
+
+        .matched {
+            background-color: limegreen !important;
+            cursor: default;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .line-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .line {
+            stroke: #007bff;
+            stroke-width: 2;
+        }
+
+        .correct-answer {
+            border: 2px solid green;
+            box-shadow: 0px 0px 8px green;
+        }
+
+        .correct2-answer {
+            border: 2px solid green;
+            box-shadow: 0px 0px 8px green;
+        }
+
+        .correct3-answer {
+            border: 2px solid green;
+            box-shadow: 0px 0px 8px green;
+        }
+
+        .crossword-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 420px;
+            /* Lower the crossword and button */
+        }
+
+        .crossword2-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 420px;
+            /* Lower the crossword and button */
+        }
+
+        .crossword3-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 420px;
+            /* Lower the crossword and button */
+        }
+
+        .crossword-container {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .crossword2-container {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .crossword3-container {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .crossword-box {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+
+        .crossword2-box {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+
+        .crossword3-box {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+
+        .hint-button {
+            display: inline-block;
+
+        }
+
+        .hint2-button {
+            display: inline-block;
+
+        }
+
+        .hint3-button {
+            display: inline-block;
+
+        }
+
+        .mc3-button {
+            background: #f5f5f5;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: left;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mc3-button:hover {
+            background: #e0e0e0;
+        }
+
+        .mbutton {
+            background: #f5f5f5;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: left;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mbutton:hover {
+            background: #e0e0e0;
+        }
+
+        .mc2-button {
+            background: #f5f5f5;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: left;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mc2-button:hover {
+            background: #e0e0e0;
+        }
+
+        .q1 {
+            margin-left: -200px;
+            margin-top: -20px;
+        }
+
+        .q2 {
+            margin-left: -100px;
+            margin-top: 320px;
+        }
+
+        .q4 {
+            margin-left: -100px;
+            margin-top: -30px;
+        }
+
+        .q5 {
+            margin-left: -100px;
+            margin-top: 370px;
+        }
+
+        .question-container {
+            position: absolute;
+            /* This ensures they don’t push each other */
+        }
+
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            /* reduced from 8px 12px */
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option-label input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 50%;
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .option-label.correct {
+            border-color: green;
+            color: green;
+        }
+
+        .option-label.wrong {
+            border-color: red;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="flipbook">
+        <!-- Cover -->
+        <div class="hard" style="background-image: url('images/p2.jpg');">
+
+            <small></small>
+        </div>
+
+        <!-- Page 1 -->
+        <div class="hard" style="background-image: url('images/1p.png');"></div>
+
+        <!-- Page 2 -->
+        <div class="page" style="background-image: url('images/3.png');">
+        </div>
+
+        <!-- table of contents -->
+        <div class="page" style="background-image: url('images/4.png');">
+        </div>
+
+        <div class="page" style="background-image: url('images/5.png');">
+        </div>
+
+        <div class="page" style="background-image: url('images/6.png');">
+        </div>
+        <div class="page" style="background-image: url('images/7.png');">
+        </div>
+        <div class="page" style="background-image: url('images/8.png');">
+        </div>
+        <div class="page" style="background-image: url('images/9.png');">
+        </div>
+        <div class="page" style="background-image: url('images/10.png');">
+        </div>
+        <div class="page" style="background-image: url('images/11.png');">
+        </div>
+        <div class="page" style="background-image: url('images/12.png');">
+        </div>
+        <div class="page" style="background-image: url('images/13.png');">
+        </div>
+        <div class="page" style="background-image: url('images/14.png');">
+            <!-- Score Display -->
+
+
+            <h2 style="
+        color: #333; 
+        font-size: 20px; 
+        font-weight: 300;
+        max-width: 500px;
+        text-align: center;
+        margin-top: 60px;
+        margin-bottom: 20px;
+    ">
+
+            </h2>
+
+            <div class="choices" style="
+        display: flex; 
+        flex-direction: column; 
+        gap: 12px; 
+        max-width: 400px; 
+        width: 100%;
+    ">
+                <button class="mbutton" onclick="checkMCAnswer(this, 'correct')">a) He prayed and thanked God for the
+                    day.</button>
+                <button class="mbutton" onclick="checkMCAnswer(this, 'wrong')">b) He played with his toys.</button>
+                <button class="mbutton" onclick="checkMCAnswer(this, 'wrong')">c) He ate breakfast.</button>
+                <button class="mbutton" onclick="checkMCAnswer(this, 'wrong')">d) He went to the bus stop.</button>
+            </div>
+
+            <p id="mc-result-message" style="
+        font-size: 16px; 
+        font-weight: 500; 
+        margin-top: 15px;
+        color: black;
+    "></p>
+
+            <audio id="correct-sound" src="sounds/ding.mp3" preload="auto"></audio>
+            <audio id="wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
+
+            <script>
+                let mcScoreAdded = false;
+
+                function checkMCAnswer(button, status) {
+                    let buttons = document.querySelectorAll(".mbutton");
+                    buttons.forEach(btn => {
+                        btn.style.background = "";
+                        btn.style.color = "";
+                    });
+
+                    let scoreDisplay = document.getElementById("mc-score-display");
+                    let resultMessage = document.getElementById("mc-result-message");
+
+                    // Get audio elements
+                    let correctSound = document.getElementById("correct-sound");
+                    let wrongSound = document.getElementById("wrong-sound");
+
+                    if (status === 'correct') {
+                        button.style.background = "#4CAF50"; // Green for correct answer
+                        button.style.color = "#fff";
+                        resultMessage.textContent = "CORRECT!";
+                        resultMessage.style.color = "green";
+                        resultMessage.style.fontWeight = "bold";
+                        resultMessage.style.fontSize = "24px";
+                        resultMessage.style.borderRadius = "8px";
+                        resultMessage.style.backgroundColor = "white";
+                        resultMessage.style.padding = "5px 10px";
+
+                        correctSound.play(); // Play correct sound
+
+                        if (!mcScoreAdded) {
+                            scoreDisplay.style.display = "block";
+                            mcScoreAdded = true;
+                            sendScore(5);
+                        }
+                    } else {
+                        button.style.background = "#FF5733"; // Red for wrong answer
+                        button.style.color = "#fff";
+                        resultMessage.textContent = "INCORRECT!";
+                        resultMessage.style.color = "red";
+                        resultMessage.style.fontWeight = "bold";
+                        resultMessage.style.fontSize = "24px";
+                        resultMessage.style.borderRadius = "8px";
+                        resultMessage.style.backgroundColor = "white";
+                        resultMessage.style.padding = "5px 10px";
+
+                        wrongSound.play(); // Play wrong sound
+                    }
+                }
+
+                function sendScore(score) {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("POST", "", true);
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr.send("score=" + score);
+
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            console.log("Score saved: " + xhr.responseText);
+                        }
+                    };
+                }
+            </script>
+
+        </div>
+        <div class="page" style="background-image: url('images/15.png');">
+            <div class="unscramble-wrapper" style="
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center;
+        padding: 20px;
+		margin-top: 200px;
+    ">
+
+                <p style="
+            font-size: 18px; 
+            font-weight: 500; 
+            color: #555;
+        "><strong></strong></p>
+
+                <p style="
+            font-size: 16px;
+            font-weight: 500;
+            color: #777;
+            margin-bottom: 10px;
+        "></p>
+
+                <input type="text" id="unscramble-input" style="
+            margin-top: 10px; 
+            padding: 10px; 
+            font-size: 16px; 
+            border: 2px solid #ccc; 
+            border-radius: 8px; 
+            text-align: center;
+            width: 300px;
+        " placeholder="Type your answer here">
+
+                <button id="unscramble-submit" style="
+            margin-top: 10px; 
+            padding: 12px 20px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            color: white; 
+            background-color: #4CAF50; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: background 0.3s ease;
+        ">Submit</button>
+
+                <p id="unscramble-result" style="
+            font-size: 16px; 
+            font-weight: 500; 
+            margin-top: 15px;
+            color: #333;
+        "></p>
+
+
+
+
+                <audio id="unscramble-correct-sound" src="sounds/ding.mp3" preload="auto"></audio>
+                <audio id="unscramble-wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
+
+                <script>
+                    const correctUnscrambleAnswer = "FAITH IN GOD";
+                    let unscrambleScoreAdded = false;
+                    let unscrambleGameScore = 10;
+
+                    document.getElementById("unscramble-submit").addEventListener("click", function () {
+                        let userAnswer = document.getElementById("unscramble-input").value.trim().toUpperCase();
+                        let resultMessage = document.getElementById("unscramble-result");
+                        let scoreDisplay = document.getElementById("unscramble-score");
+
+                        // Audio elements
+                        let correctSound = document.getElementById("unscramble-correct-sound");
+                        let wrongSound = document.getElementById("unscramble-wrong-sound");
+
+                        if (userAnswer === correctUnscrambleAnswer) {
+                            resultMessage.textContent = "CORRECT!";
+                            resultMessage.style.color = "green";
+                            resultMessage.style.fontWeight = "bold";
+                            resultMessage.style.fontSize = "24px";
+                            resultMessage.style.borderRadius = "8px";
+                            resultMessage.style.backgroundColor = "white";
+                            resultMessage.style.padding = "5px 10px";
+
+                            correctSound.play(); // Play correct sound
+
+                            if (!unscrambleScoreAdded) {
+                                scoreDisplay.style.display = "block";
+                                unscrambleScoreAdded = true;
+                                submitUnscrambleScore(unscrambleGameScore);
+                            }
+                        } else {
+                            resultMessage.textContent = "INCORRECT!";
+                            resultMessage.style.color = "red";
+                            resultMessage.style.fontWeight = "bold";
+                            resultMessage.style.fontSize = "24px";
+                            resultMessage.style.borderRadius = "8px";
+                            resultMessage.style.backgroundColor = "white";
+                            resultMessage.style.padding = "5px 10px";
+
+                            wrongSound.play(); // Play wrong sound
+                        }
+                    });
+
+                    function submitUnscrambleScore(score) {
+                        let xhr = new XMLHttpRequest();
+                        xhr.open("POST", "save_score_act2.php", true);
+                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4 && xhr.status === 200) {
+                                console.log(xhr.responseText);
+                            }
+                        };
+                        xhr.send("score=" + score);
+                    }
+
+                    function resetUnscrambleScores() {
+                        let xhr = new XMLHttpRequest();
+                        xhr.open("POST", "save_score_act2.php", true);
+                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4 && xhr.status === 200) {
+                                console.log(xhr.responseText);
+                            }
+                        };
+                        xhr.send("clear=1");
+                    }
+                </script>
+
+
+            </div>
+        </div>
+
+        <div class="page" style="background-image: url('images/16.png');">
+            <div class="page" style="background-image: url('images/16.png'); background-size: cover;">
+                <!-- PRAY -->
+                <div class="question-block pray-block">
+                    <div class="letter-inputs">
+                        <span>P</span>
+                        <input type="text" maxlength="1" class="letter" id="pray-1" />
+                        <input type="text" maxlength="1" class="letter" id="pray-2" />
+                        <input type="text" maxlength="1" class="letter" id="pray-3" />
+                    </div>
+                    <p id="result-pray" class="result" style="display: none;"></p>
+                </div>
+                <!-- FAITH -->
+                <div class="question-block faith-block">
+                    <div class="letter-inputs">
+                        <span>F</span>
+                        <input type="text" maxlength="1" class="letter" id="faith-1" />
+                        <input type="text" maxlength="1" class="letter" id="faith-2" />
+                        <input type="text" maxlength="1" class="letter" id="faith-3" />
+                        <input type="text" maxlength="1" class="letter" id="faith-4" />
+                    </div>
+                    <p id="result-faith" class="result" style="display: none;"></p>
+                </div>
+
+                <audio id="ding-sound" src="sounds/ding.mp3" preload="auto"></audio>
+                <audio id="wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
+
+                <!-- CSS -->
+                <style>
+                    .pray-block {
+                        margin-top: 100px;
+                        margin-left: -175px;
+                    }
+
+                    .faith-block {
+                        margin-top: 50px;
+                        margin-left: -135px;
+                    }
+
+
+                    .letter-inputs {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin: 10px 0;
+                    }
+
+                    .letter-inputs span {
+                        font-weight: bold;
+                        font-size: 20px;
+                    }
+
+                    .letter {
+                        width: 40px;
+                        height: 40px;
+                        text-align: center;
+                        font-size: 20px;
+                        font-weight: bold;
+                        border: 2px solid #999;
+                        border-radius: 5px;
+
+                    }
+
+                    .result {
+                        font-size: 18px;
+                        font-weight: bold;
+                        margin-top: 10px;
+                    }
+
+                    .letter {
+                        transition: border-color 0.3s ease;
+                    }
+                </style>
+
+                <script>
+                    const correctPray = "RAY";
+                    const correctFaith = "AITH";
+
+                    let prayAnswered = false;
+                    let faithAnswered = false;
+
+                    function playDing() {
+                        const ding = document.getElementById("ding-sound");
+                        if (ding) ding.play();
+                    }
+
+                    function playWrong() {
+                        const wrong = document.getElementById("wrong-sound");
+                        if (wrong) wrong.play();
+                    }
+
+                    function setInputBorder(ids, color) {
+                        ids.forEach(id => {
+                            const input = document.getElementById(id);
+                            if (input) {
+                                input.style.borderColor = color;
+                            }
+                        });
+                    }
+
+                    function autoCheck() {
+                        const prayIds = [1, 2, 3].map(i => `pray-${i}`);
+                        const faithIds = [1, 2, 3, 4].map(i => `faith-${i}`);
+
+                        const prayVal = prayIds.map(id => document.getElementById(id).value.toUpperCase()).join("");
+                        const faithVal = faithIds.map(id => document.getElementById(id).value.toUpperCase()).join("");
+
+                        if (prayVal === correctPray && !prayAnswered) {
+                            playDing();
+                            setInputBorder(prayIds, "green");
+                            prayAnswered = true;
+                        } else if (prayVal.length === 3 && prayVal !== correctPray) {
+                            playWrong();
+                            setInputBorder(prayIds, "red");
+                            prayAnswered = false;
+                        }
+
+                        if (faithVal === correctFaith && !faithAnswered) {
+                            playDing();
+                            setInputBorder(faithIds, "green");
+                            faithAnswered = true;
+                        } else if (faithVal.length === 4 && faithVal !== correctFaith) {
+                            playWrong();
+                            setInputBorder(faithIds, "red");
+                            faithAnswered = false;
+                        }
+                    }
+
+                    document.querySelectorAll(".letter").forEach(input => {
+                        input.addEventListener("input", autoCheck);
+                    });
+                </script>
+
+            </div>
+        </div>
+        <div class="page" style="background-image: url('images/17.png');">
+            <div class="crossword2-wrapper">
+                <div class="crossword2-container">
+                    <input type="text" maxlength="1" class="crossword-box" id="box-1" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-2" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-3" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-4" />
+                </div>
+                <button id="hint2-button" class="hint2-button"></button>
+            </div>
+            <p id="cw2-result-message"></p>
+
+            <audio id="cw2-correct-sound" src="sounds/ding.mp3" preload="auto"></audio>
+            <audio id="cw2-wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
+
+            <script>
+                const correct2Answer = "PRAY";
+                let hint2Used = false;
+                let cw2ScoreAddedAct4 = false;
+                const hint2Button = document.getElementById("hint2-button");
+                const score2Display = document.getElementById("cw2-score-display");
+
+                if (hint2Button) {
+                    hint2Button.style.backgroundImage = "url('images/bulbon.png')";
+                    hint2Button.style.backgroundSize = "contain";
+                    hint2Button.style.backgroundRepeat = "no-repeat";
+                    hint2Button.style.width = "40px";
+                    hint2Button.style.height = "45px";
+                    hint2Button.style.border = "none";
+                    hint2Button.style.cursor = "pointer";
+
+                    hint2Button.addEventListener("click", function () {
+                        if (!hint2Used) {
+                            document.getElementById("box-1").value = correct2Answer[0];
+                            hint2Button.style.backgroundImage = "url('images/bulboff.png')";
+                            hint2Used = true;
+                        }
+                    });
+                }
+
+                function check2CrosswordAnswerAct4() {
+                    let user2Answer = "";
+                    for (let i = 1; i <= 4; i++) {
+                        user2Answer += document.getElementById(`box-${i}`).value.toUpperCase();
+                    }
+
+                    if (user2Answer.length === 4) {
+                        const message = document.getElementById("cw2-result-message");
+                        const correctSound = document.getElementById("cw2-correct-sound");
+                        const wrongSound = document.getElementById("cw2-wrong-sound");
+
+                        if (user2Answer === correct2Answer) {
+                            message.textContent = "CORRECT!";
+                            message.style.color = "green";
+                            message.style.fontWeight = "bold";
+                            message.style.fontSize = "24px";
+                            message.style.borderRadius = "8px";
+                            message.style.backgroundColor = "white";
+                            message.style.padding = "5px 10px";
+
+                            correctSound.play(); // ✅ Play correct sound
+
+                            if (!cw2ScoreAddedAct4) {
+                                score2Display.style.display = "block";
+                                cw2ScoreAddedAct4 = true;
+                                save2ScoreAct4(10);
+                            }
+                        } else {
+                            message.textContent = "INCORRECT!";
+                            message.style.color = "red";
+                            message.style.fontWeight = "bold";
+                            message.style.fontSize = "24px";
+                            message.style.borderRadius = "8px";
+                            message.style.backgroundColor = "white";
+                            message.style.padding = "5px 10px";
+
+                            wrongSound.play(); // ❌ Play wrong sound
+                        }
+                    }
+                }
+
+                function save2ScoreAct4(score) {
+                    fetch("save_score_act4.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "score=" + score
+                    }).then(response => response.text()).then(data => console.log(data));
+                }
+
+                document.querySelectorAll(".crossword-box").forEach(box => {
+                    box.addEventListener("input", check2CrosswordAnswerAct4);
+                });
+            </script>
+
+
+        </div>
+        <div class="page" style="background-image: url('images/18.png');">
+        </div>
+        <div class="page" style="background-image: url('images/19.png');">
+        </div>
+        <div class="page" style="background-image: url('images/20.png');">
+        </div>
+        <div class="page" style="background-image: url('images/21.png');">
+        </div>
+        <div class="page" style="background-image: url('images/22.png');">
+
+            <h2 style="
+        color: #333; 
+        font-size: 20px; 
+        font-weight: 300;
+        max-width: 500px;
+        text-align: center;
+        margin-top: 120px;
+        margin-bottom: 20px;
+    ">
+
+            </h2>
+
+            <div class="mc2-choices" style="
+        display: flex; 
+        flex-direction: column; 
+        gap: 12px; 
+        max-width: 400px; 
+        width: 100%;
+    ">
+                <button class="mc2-button" onclick="checkMC2Answer(this, 'wrong')">a)He didn't want to do the
+                    work.</button>
+                <button class="mc2-button" onclick="checkMC2Answer(this, 'correct')">b)He wanted to learn the lesson
+                    better.
+                </button>
+                <button class="mc2-button" onclick="checkMC2Answer(this, 'wrong')">c)He was trying to waste
+                    time.</button>
+                <button class="mc2-button" onclick="checkMC2Answer(this, 'wrong')">d)He wanted to test the
+                    teacher.</button>
+            </div>
+
+            <p id="mc2-result-message" style="
+        font-size: 16px; 
+        font-weight: 500; 
+        margin-top: 15px;
+        color: black;
+    "></p>
+
+            <audio id="mc2-correct-sound" src="sounds/ding.mp3" preload="auto"></audio>
+            <audio id="mc2-wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
+
+            <script>
+                let mc2ScoreAdded = false;
+                let mc2Score = 5; // Score for a correct answer
+
+                // Clear score from database when the page loads
+                window.onload = function () {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("GET", "save_score_act3.php", true);
+                    xhr.send();
+                };
+
+                function checkMC2Answer(button, status) {
+                    let buttons = document.querySelectorAll(".mc2-button");
+                    buttons.forEach(btn => btn.style.background = ""); // Reset button colors
+
+                    const resultMessage = document.getElementById("mc2-result-message");
+                    const correctSound = document.getElementById("mc2-correct-sound");
+                    const wrongSound = document.getElementById("mc2-wrong-sound");
+
+                    if (status === 'correct') {
+                        button.style.background = "#4CAF50"; // Green for correct answer
+                        button.style.color = "#fff";
+                        resultMessage.textContent = "CORRECT!";
+                        resultMessage.style.color = "green";
+                        resultMessage.style.fontWeight = "bold";
+                        resultMessage.style.fontSize = "24px";
+                        resultMessage.style.borderRadius = "8px";
+                        resultMessage.style.backgroundColor = "white";
+                        resultMessage.style.padding = "5px 10px";
+
+                        correctSound.play(); // ✅ Play correct sound
+
+                        if (!mc2ScoreAdded) {
+                            document.getElementById("mc2-score-display").style.display = "block";
+                            mc2ScoreAdded = true;
+
+                            // Send score to database
+                            saveMC2Score(mc2Score);
+                        }
+                    } else {
+                        button.style.background = "#FF5733"; // Red for wrong answer
+                        button.style.color = "black";
+                        resultMessage.textContent = "INCORRECT!";
+                        resultMessage.style.color = "red";
+                        resultMessage.style.fontWeight = "bold";
+                        resultMessage.style.fontSize = "24px";
+                        resultMessage.style.borderRadius = "8px";
+                        resultMessage.style.backgroundColor = "white";
+                        resultMessage.style.padding = "5px 10px";
+
+                        wrongSound.play(); // ❌ Play wrong sound
+                    }
+                }
+
+                function saveMC2Score(score) {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("POST", "save_score_act3.php", true);
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            console.log(xhr.responseText); // Debugging response
+                        }
+                    };
+                    xhr.send("score=" + score);
+                }
+            </script>
+
+        </div>
+        <div class="page" style="background-image: url('images/23.png');">
+            <div class="crossword-wrapper">
+                <div class="crossword-container">
+                    <input type="text" maxlength="1" class="crossword-box" id="box-1" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-2" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-3" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-4" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-5" />
+                </div>
+                <button id="hint-button" class="hint-button"></button>
+            </div>
+            <p id="cw-result-message"></p>
+
+
+            <audio id="cw-correct-sound" src="sounds/ding.mp3" preload="auto"></audio>
+            <audio id="cw-wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
+            <script>
+                const correctAnswer = "LEARN";
+                let hintUsed = false;
+                let cwScoreAddedAct4 = false;
+                const hintButton = document.getElementById("hint-button");
+                const scoreDisplay = document.getElementById("cw-score-display");
+
+
+
+                if (hintButton) {
+                    hintButton.style.backgroundImage = "url('images/bulbon.png')";
+                    hintButton.style.backgroundSize = "contain";
+                    hintButton.style.backgroundRepeat = "no-repeat";
+                    hintButton.style.width = "40px";
+                    hintButton.style.height = "45px";
+                    hintButton.style.border = "10px";
+                    hintButton.style.cursor = "pointer";
+
+                    hintButton.addEventListener("click", function () {
+                        if (!hintUsed) {
+                            document.getElementById("box-1").value = correctAnswer[0];
+                            hintButton.style.backgroundImage = "url('images/bulboff.png')";
+                            hintUsed = true;
+                        }
+                    });
+                }
+
+                function checkCrosswordAnswerAct4() {
+                    let userAnswer = "";
+                    for (let i = 1; i <= 5; i++) {
+                        userAnswer += document.getElementById(`box-${i}`).value.toUpperCase();
+                    }
+
+                    const resultMessage = document.getElementById("cw-result-message");
+
+                    if (userAnswer.length === 5) {
+                        if (userAnswer === correctAnswer) {
+                            resultMessage.textContent = "CORRECT!";
+                            resultMessage.style.color = "green";
+                            resultMessage.style.fontWeight = "bold";
+                            resultMessage.style.fontSize = "24px";
+                            resultMessage.style.borderRadius = "8px";
+                            resultMessage.style.backgroundColor = "white";
+                            resultMessage.style.padding = "5px 10px";
+
+                            correctSound.play(); // ✅ Play sound for correct
+
+                            if (!cwScoreAddedAct4) {
+                                scoreDisplay.style.display = "block";
+                                cwScoreAddedAct4 = true;
+                                saveScoreAct4(10);
+                            }
+                        } else {
+                            resultMessage.textContent = "INCORRECT!";
+                            resultMessage.style.color = "red";
+                            resultMessage.style.fontWeight = "bold";
+                            resultMessage.style.fontSize = "24px";
+                            resultMessage.style.borderRadius = "8px";
+                            resultMessage.style.backgroundColor = "white";
+                            resultMessage.style.padding = "5px 10px";
+
+                            wrongSound.play(); // ❌ Play sound for wrong
+                        }
+                    }
+                }
+
+                function saveScoreAct4(score) {
+                    fetch("save_score_act4.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "score=" + score
+                    }).then(response => response.text()).then(data => console.log(data));
+                }
+
+                document.querySelectorAll(".crossword-box").forEach(box => {
+                    box.addEventListener("input", checkCrosswordAnswerAct4);
+                });
+            </script>
+
+        </div>
+        <div class="page" style="background-image: url('images/24.png');">
+
+            <div class="page" style="background-image: url('images/24.png'); background-size: cover;">
+                <!-- WISDOM -->
+                <div class="question-block wisdom-block">
+                    <div class="letter-inputs1">
+                        <span>W</span>
+                        <input type="text" maxlength="1" class="letter" id="wisdom-2" /> <!-- I -->
+                        <input type="text" maxlength="1" class="letter" id="wisdom-3" /> <!-- S -->
+                        <input type="text" maxlength="1" class="letter" id="wisdom-4" /> <!-- D -->
+                        <input type="text" maxlength="1" class="letter" id="wisdom-5" /> <!-- O -->
+                        <input type="text" maxlength="1" class="letter" id="wisdom-6" /> <!-- M -->
+                    </div>
+                    <p id="result-wisdom" class="result" style="display: none;"></p>
+                </div>
+
+                <!-- LEARN -->
+                <div class="question-block learn-block">
+                    <div class="letter-inputs1">
+                        <span>L</span>
+                        <input type="text" maxlength="1" class="letter" id="learn-1" /> <!-- E -->
+                        <input type="text" maxlength="1" class="letter" id="learn-2" /> <!-- A -->
+                        <input type="text" maxlength="1" class="letter" id="learn-3" /> <!-- R -->
+                        <input type="text" maxlength="1" class="letter" id="learn-4" /> <!-- N -->
+                    </div>
+                    <p id="result-learn" class="result" style="display: none;"></p>
+                </div>
+
+                <audio id="ding-sound" src="sounds/ding.mp3" preload="auto"></audio>
+                <audio id="wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
+
+                <!-- CSS -->
+                <style>
+                    .wisdom-block {
+                        margin-top: 95px;
+                        margin-left: -70px;
+                    }
+
+                    .learn-block {
+                        margin-top: 50px;
+                        margin-left: -130px;
+                    }
+
+                    .letter-inputs1 {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin: 10px 0;
+                    }
+
+                    .letter-inputs1 span {
+                        font-weight: bold;
+                        font-size: 20px;
+                    }
+
+                    .letter {
+                        width: 40px;
+                        height: 40px;
+                        text-align: center;
+                        font-size: 20px;
+                        font-weight: bold;
+                        border: 2px solid #999;
+                        border-radius: 5px;
+                        transition: border-color 0.3s ease;
+                    }
+
+                    .result {
+                        font-size: 18px;
+                        font-weight: bold;
+                        margin-top: 10px;
+                    }
+                </style>
+
+                <!-- JS -->
+                <script>
+                    const correctWisdom = "ISDOM";
+                    const correctLearn = "EARN";
+
+                    let wisdomAnswered = false;
+                    let learnAnswered = false;
+
+                    function playDing() {
+                        const ding = document.getElementById("ding-sound");
+                        if (ding) ding.play();
+                    }
+
+                    function playWrong() {
+                        const wrong = document.getElementById("wrong-sound");
+                        if (wrong) wrong.play();
+                    }
+
+                    function autoCheckWords() {
+                        const wisdomIds = [2, 3, 4, 5, 6]; // For I-S-D-O-M
+                        const learnIds = [1, 2, 3, 4];     // For E-A-R-N
+
+                        let wisdomVal = "";
+                        let learnVal = "";
+
+                        wisdomIds.forEach((i, index) => {
+                            const el = document.getElementById(`wisdom-${i}`);
+                            const correctChar = correctWisdom[index];
+                            if (el) {
+                                const val = el.value.toUpperCase();
+                                wisdomVal += val;
+                                if (val === correctChar) {
+                                    el.style.borderColor = "green";
+                                } else if (val !== "") {
+                                    el.style.borderColor = "red";
+                                } else {
+                                    el.style.borderColor = "#999";
+                                }
+                            }
+                        });
+
+                        learnIds.forEach((i, index) => {
+                            const el = document.getElementById(`learn-${i}`);
+                            const correctChar = correctLearn[index];
+                            if (el) {
+                                const val = el.value.toUpperCase();
+                                learnVal += val;
+                                if (val === correctChar) {
+                                    el.style.borderColor = "green";
+                                } else if (val !== "") {
+                                    el.style.borderColor = "red";
+                                } else {
+                                    el.style.borderColor = "#999";
+                                }
+                            }
+                        });
+
+                        if (wisdomVal === correctWisdom && !wisdomAnswered) {
+                            playDing();
+                            wisdomAnswered = true;
+                        } else if (wisdomVal.length === 5 && wisdomVal !== correctWisdom) {
+                            playWrong();
+                            wisdomAnswered = false;
+                        }
+
+                        if (learnVal === correctLearn && !learnAnswered) {
+                            playDing();
+                            learnAnswered = true;
+                        } else if (learnVal.length === 4 && learnVal !== correctLearn) {
+                            playWrong();
+                            learnAnswered = false;
+                        }
+                    }
+
+                    document.querySelectorAll(".letter").forEach(input => {
+                        input.addEventListener("input", autoCheckWords);
+                    });
+                </script>
+            </div>
+        </div>
+
+        <div class="page" style="background-image: url('images/25.png');">
+            <div class="unscramble3-wrapper" style="
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center;
+        padding: 20px;
+        margin-top: 260px;
+    ">
+                <input type="text" id="unscramble3-input" style="
+            margin-top: 40px; 
+            padding: 10px; 
+            font-size: 16px; 
+            border: 2px solid #ccc; 
+            border-radius: 8px; 
+            text-align: center;
+            width: 300px;
+        " placeholder="Type your answer here">
+
+                <button id="unscramble3-submit" style="
+            margin-top: 30px; 
+            padding: 12px 20px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            color: white; 
+            background-color: #4CAF50; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: background 0.3s ease;
+        ">Submit</button>
+
+                <p id="unscramble3-result" style="
+            font-size: 16px; 
+            font-weight: 500; 
+            margin-top: 15px;
+            color: #333;
+        "></p>
+
+
+                <script>
+                    const correctUnscramble3Answer = "LOVE OF WISDOM";
+                    let unscramble3ScoreAdded = false;
+
+                    document.getElementById("unscramble3-submit").addEventListener("click", function () {
+                        let userAnswer = document.getElementById("unscramble3-input").value.trim().toUpperCase();
+                        let resultMessage = document.getElementById("unscramble3-result");
+                        let scoreDisplay = document.getElementById("unscramble3-score");
+
+                        if (userAnswer === correctUnscramble3Answer) {
+                            resultMessage.textContent = "CORRECT!";
+                            resultMessage.style.color = "green";
+                            resultMessage.style.fontWeight = "bold";
+                            resultMessage.style.fontSize = "24px"; // Sets text size
+                            resultMessage.style.borderRadius = "8px"; // Adds rounded corners
+                            resultMessage.style.backgroundColor = "white"; // Sets background to white
+                            resultMessage.style.padding = "5px 10px"; // Adds some padding for better appearance
+
+                            // Play the correct sound
+                            let correctSound = new Audio('sounds/ding.mp3');
+                            correctSound.play();
+
+                            if (!unscramble3ScoreAdded) {
+                                scoreDisplay.style.display = "block";
+                                unscramble3ScoreAdded = true;
+                                saveScoreAct6(10); // Save score when correct
+                            }
+                        } else {
+                            resultMessage.textContent = "INCORRECT!";
+                            resultMessage.style.color = "red";
+                            resultMessage.style.fontWeight = "bold";
+                            resultMessage.style.fontSize = "24px"; // Sets text size
+                            resultMessage.style.borderRadius = "8px"; // Adds rounded corners
+                            resultMessage.style.backgroundColor = "white"; // Sets background to white
+                            resultMessage.style.padding = "5px 10px"; // Adds some padding for better appearance
+
+                            // Play the incorrect sound
+                            let incorrectSound = new Audio('sounds/wrong.mp3');
+                            incorrectSound.play();
+                        }
+                    });
+
+                    function saveScoreAct99(score) {
+                        fetch("save_score_act99.php", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                            body: "score=" + score
+                        }).then(response => response.text()).then(data => console.log(data));
+                    }
+                </script>
+
+
+            </div>
+        </div>
+        <div class="page" style="background-image: url('images/26.png');">
+        </div>
+        <div class="page" style="background-image: url('images/27.png');">
+        </div>
+        <div class="page"
+            style="background-image: url('images/28.png'); background-size: cover; min-height: 100vh; display: flex; justify-content: center; align-items: center;">
+        </div>
+
+
+        <!-- Multiple Choice Page -->
+        <div class="page" style="background-image: url('images/29.png');">
+        </div>
+        <div class="page" style="background-image: url('images/30.png');">
+
+        </div>
+        <div class="page" style="background-image: url('images/31.png');">
+
+        </div>
+        <div class="page" style="background-image: url('images/32.png');">
+
+
+            <h2 style="
+    color: #333; 
+    font-size: 20px; 
+    font-weight: 300;
+    max-width: 500px;
+    text-align: center;
+    margin-top: 120px;
+    margin-bottom: 20px;
+">
+            </h2>
+
+            <div class="mc3-choices" style="
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    max-width: 400px; 
+    width: 100%;
+">
+                <button class="mc3-button" onclick="checkMC3Answer(this, 'correct')">a) He helped her carry her heavy
+                    grocery bags.</button>
+                <button class="mc3-button" onclick="checkMC3Answer(this, 'wrong')">b) He painted her house.</button>
+                <button class="mc3-button" onclick="checkMC3Answer(this, 'wrong')">c) He walked her dog.</button>
+                <button class="mc3-button" onclick="checkMC3Answer(this, 'wrong')">d) He gave her a gift.</button>
+            </div>
+
+            <p id="mc3-result-message" style="
+    font-size: 16px; 
+    font-weight: 500; 
+    margin-top: 15px;
+    color: black;
+"></p>
+
+            <script>
+                let mc3ScoreAdded = false;
+                let mc3Score = 5; // Score for a correct answer
+
+                // Clear score from database when the page loads
+                window.onload = function () {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("GET", "save_score_act5.php", true);
+                    xhr.send();
+                };
+
+                function checkMC3Answer(button, status) {
+                    let buttons = document.querySelectorAll(".mc3-button");
+                    buttons.forEach(btn => btn.style.background = ""); // Reset button colors
+
+                    if (status === 'correct') {
+                        button.style.background = "#4CAF50"; // Green for correct answer
+                        button.style.color = "#fff";
+                        document.getElementById("mc3-result-message").textContent = "CORRECT!";
+                        document.getElementById("mc3-result-message").style.color = "green";
+                        document.getElementById("mc3-result-message").style.fontWeight = "bold";
+                        document.getElementById("mc3-result-message").style.fontSize = "24px"; // Sets font size
+                        document.getElementById("mc3-result-message").style.borderRadius = "8px"; // Adds rounded corners
+                        document.getElementById("mc3-result-message").style.backgroundColor = "white"; // Sets background to yellow
+                        document.getElementById("mc3-result-message").style.padding = "5px 10px"; // Adds some padding for better appearance
+
+                        // Play the correct sound
+                        let correctSound = new Audio('sounds/ding.mp3');
+                        correctSound.play();
+
+                        if (!mc3ScoreAdded) {
+                            document.getElementById("mc3-score-display").style.display = "block";
+                            mc3ScoreAdded = true;
+
+                            // Send score to database
+                            saveMC3Score(mc3Score);
+                        }
+                    } else {
+                        button.style.background = "#FF5733"; // Red for wrong answer
+                        button.style.color = "black";
+                        document.getElementById("mc3-result-message").textContent = "INCORRECT!";
+                        document.getElementById("mc3-result-message").style.color = "red"; // Corrected color for INCORRECT
+                        document.getElementById("mc3-result-message").style.fontWeight = "bold";
+                        document.getElementById("mc3-result-message").style.fontSize = "24px"; // Sets font size
+                        document.getElementById("mc3-result-message").style.borderRadius = "8px"; // Adds rounded corners
+                        document.getElementById("mc3-result-message").style.backgroundColor = "white"; // Sets background to white
+                        document.getElementById("mc3-result-message").style.padding = "5px 10px"; // Adds some padding for better appearance
+
+                        // Play the incorrect sound
+                        let incorrectSound = new Audio('sounds/wrong.mp3');
+                        incorrectSound.play();
+                    }
+                }
+
+                function saveMC3Score(score) {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("POST", "save_score_act5.php", true);
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            console.log(xhr.responseText); // Debugging response
+                        }
+                    };
+                    xhr.send("score=" + score);
+                }
+            </script>
+
+        </div>
+        <div class="page" style="background-image: url('images/33.png');">
+            <div class="unscramble2-wrapper" style="
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center;
+        padding: 20px;
+        margin-top: 210px;
+    ">
+                <input type="text" id="unscramble2-input" style="
+            margin-top: 10px; 
+            padding: 10px; 
+            font-size: 16px; 
+            border: 2px solid #ccc; 
+            border-radius: 8px; 
+            text-align: center;
+            width: 300px;
+        " placeholder="Type your answer here">
+
+                <button id="unscramble2-submit" style="
+            margin-top: 10px; 
+            padding: 12px 20px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            color: white; 
+            background-color: #4CAF50; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: background 0.3s ease;
+        ">Submit</button>
+
+                <p id="unscramble2-result" style="
+            font-size: 16px; 
+            font-weight: 500; 
+            margin-top: 15px;
+            color: #333;
+        "></p>
+
+
+                <script>
+                    const correctUnscramble2Answer = "SERVICE TO FELLOWMEN";
+                    let unscramble2ScoreAdded = false;
+
+                    document.getElementById("unscramble2-submit").addEventListener("click", function () {
+                        let userAnswer = document.getElementById("unscramble2-input").value.trim().toUpperCase();
+                        let resultMessage = document.getElementById("unscramble2-result");
+                        let scoreDisplay = document.getElementById("unscramble2-score");
+
+                        if (userAnswer === correctUnscramble2Answer) {
+                            resultMessage.textContent = "CORRECT!";
+                            resultMessage.style.color = "green";
+                            resultMessage.style.fontWeight = "bold";
+                            resultMessage.style.fontSize = "24px"; // Sets text size
+                            resultMessage.style.borderRadius = "8px"; // Adds rounded corners
+                            resultMessage.style.backgroundColor = "white"; // Sets background to yellow
+                            resultMessage.style.padding = "5px 10px"; // Adds some padding for better appearance
+
+                            // Play the correct sound
+                            let correctSound = new Audio('sounds/ding.mp3');
+                            correctSound.play();
+
+                            if (!unscramble2ScoreAdded) {
+                                scoreDisplay.style.display = "block";
+                                unscramble2ScoreAdded = true;
+                                saveScoreAct6(10); // Save score when correct
+                            }
+                        } else {
+                            resultMessage.textContent = "INCORRECT!";
+                            resultMessage.style.color = "red"; // Corrected color for INCORRECT
+                            resultMessage.style.fontWeight = "bold";
+                            resultMessage.style.fontSize = "24px"; // Sets text size
+                            resultMessage.style.borderRadius = "8px"; // Adds rounded corners
+                            resultMessage.style.backgroundColor = "white"; // Sets background to white
+                            resultMessage.style.padding = "5px 10px"; // Adds some padding for better appearance
+
+                            // Play the incorrect sound
+                            let incorrectSound = new Audio('sounds/wrong.mp3');
+                            incorrectSound.play();
+                        }
+                    });
+
+                    function saveScoreAct6(score) {
+                        fetch("save_score_act6.php", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                            body: "score=" + score
+                        }).then(response => response.text()).then(data => console.log(data));
+                    }
+                </script>
+
+
+            </div>
+        </div>
+        <div class="page" style="background-image: url('images/34.png');">
+            <div class="page" style="background-image: url('images/34.png'); background-size: cover;">
+                <!-- SERVICE -->
+                <div class="question-block service-block">
+                    <div class="letter-inputs1">
+                        <span>S</span>
+                        <input type="text" maxlength="1" class="letter" id="service-2" /> <!-- E -->
+                        <input type="text" maxlength="1" class="letter" id="service-3" /> <!-- R -->
+                        <input type="text" maxlength="1" class="letter" id="service-4" /> <!-- V -->
+                        <input type="text" maxlength="1" class="letter" id="service-5" /> <!-- I -->
+                        <input type="text" maxlength="1" class="letter" id="service-6" /> <!-- C -->
+                        <input type="text" maxlength="1" class="letter" id="service-7" /> <!-- E -->
+                    </div>
+                    <p id="result-service" class="result" style="display: none;"></p>
+                </div>
+                <!-- HELP -->
+                <div class="question-block help-block">
+                    <div class="letter-inputs1">
+                        <span>H</span>
+                        <input type="text" maxlength="1" class="letter" id="help-1" />
+                        <input type="text" maxlength="1" class="letter" id="help-2" />
+                        <input type="text" maxlength="1" class="letter" id="help-3" />
+                    </div>
+                    <p id="result-help" class="result" style="display: none;"></p>
+                </div>
+
+                <audio id="ding-sound" src="sounds/ding.mp3" preload="auto"></audio>
+                <audio id="wrong-sound" src="sounds/wrong.mp3" preload="auto"></audio>
+
+                <!-- CSS -->
+                <style>
+                    .service-block {
+                        margin-top: 95px;
+                        margin-left: -35px;
+                    }
+
+                    .help-block {
+                        margin-top: 50px;
+                        margin-left: -175px;
+                    }
+
+                    .letter-inputs1 {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin: 10px 0;
+                    }
+
+                    .letter-inputs1 span {
+                        font-weight: bold;
+                        font-size: 20px;
+                    }
+
+                    .letter {
+                        width: 40px;
+                        height: 40px;
+                        text-align: center;
+                        font-size: 20px;
+                        font-weight: bold;
+                        border: 2px solid #999;
+                        border-radius: 5px;
+                        transition: border-color 0.3s ease;
+                    }
+
+                    .result {
+                        font-size: 18px;
+                        font-weight: bold;
+                        margin-top: 10px;
+                    }
+                </style>
+                <script>
+                    const correctService = "ERVICE";
+                    const correctHelp = "ELP";
+
+                    let serviceAnswered = false;
+                    let helpAnswered = false;
+
+                    function playDingService() {
+                        const ding = document.getElementById("ding-sound");
+                        if (ding) ding.play();
+                    }
+
+                    function playWrongService() {
+                        const wrong = document.getElementById("wrong-sound");
+                        if (wrong) wrong.play();
+                    }
+
+                    function autoCheckService() {
+                        const serviceIds = [2, 3, 4, 5, 6, 7]; // For E-R-V-I-C-E
+                        const helpIds = [1, 2, 3];             // For E-L-P
+
+                        let serviceVal = "";
+                        let helpVal = "";
+
+                        serviceIds.forEach((i, index) => {
+                            const el = document.getElementById(`service-${i}`);
+                            const correctChar = correctService[index];
+                            if (el) {
+                                const val = el.value.toUpperCase();
+                                serviceVal += val;
+                                if (val === correctChar) {
+                                    el.style.borderColor = "green";
+                                } else if (val !== "") {
+                                    el.style.borderColor = "red";
+                                } else {
+                                    el.style.borderColor = "#999";
+                                }
+                            }
+                        });
+
+                        helpIds.forEach((i, index) => {
+                            const el = document.getElementById(`help-${i}`);
+                            const correctChar = correctHelp[index];
+                            if (el) {
+                                const val = el.value.toUpperCase();
+                                helpVal += val;
+                                if (val === correctChar) {
+                                    el.style.borderColor = "green";
+                                } else if (val !== "") {
+                                    el.style.borderColor = "red";
+                                } else {
+                                    el.style.borderColor = "#999";
+                                }
+                            }
+                        });
+
+                        if (serviceVal === correctService && !serviceAnswered) {
+                            playDingService();
+                            serviceAnswered = true;
+                        } else if (serviceVal.length === 6 && serviceVal !== correctService) {
+                            playWrongService();
+                            serviceAnswered = false;
+                        }
+
+                        if (helpVal === correctHelp && !helpAnswered) {
+                            playDingService();
+                            helpAnswered = true;
+                        } else if (helpVal.length === 3 && helpVal !== correctHelp) {
+                            playWrongService();
+                            helpAnswered = false;
+                        }
+                    }
+
+                    document.querySelectorAll(".letter").forEach(input => {
+                        input.addEventListener("input", autoCheckService);
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="page" style="background-image: url('images/35.png');">
+            <div class="crossword3-wrapper">
+                <div class="crossword3-container">
+                    <input type="text" maxlength="1" class="crossword-box" id="box-1" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-2" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-3" />
+                    <input type="text" maxlength="1" class="crossword-box" id="box-4" />
+                </div>
+                <button id="hint3-button" class="hint3-button"></button>
+            </div>
+            <p id="cw3-result-message"></p>
+
+            <script>
+                const correct3Answer = "HELP";
+                let hint3Used = false;
+                let cw3ScoreAddedAct4 = false;
+                const hint3Button = document.getElementById("hint3-button");
+                const score3Display = document.getElementById("cw3-score-display");
+
+                if (hint3Button) {
+                    hint3Button.style.backgroundImage = "url('images/bulbon.png')";
+                    hint3Button.style.backgroundSize = "contain";
+                    hint3Button.style.backgroundRepeat = "no-repeat";
+                    hint3Button.style.width = "40px";
+                    hint3Button.style.height = "45px";
+                    hint3Button.style.border = "none";
+                    hint3Button.style.cursor = "pointer";
+
+                    hint3Button.addEventListener("click", function () {
+                        if (!hint3Used) {
+                            document.getElementById("box-1").value = correct3Answer[0];
+                            hint3Button.style.backgroundImage = "url('images/bulboff.png')";
+                            hint3Used = true;
+                        }
+                    });
+                }
+
+                function check3CrosswordAnswerAct4() {
+                    let user3Answer = "";
+                    for (let i = 1; i <= 4; i++) {
+                        user3Answer += document.getElementById(`box-${i}`).value.toUpperCase();
+                    }
+
+                    if (user3Answer.length === 4) {
+                        const message = document.getElementById("cw3-result-message");
+                        if (user3Answer === correct3Answer) {
+                            message.textContent = "CORRECT!";
+                            message.style.color = "green";
+                            message.style.fontWeight = "bold";
+                            message.style.fontSize = "24px";
+                            message.style.borderRadius = "8px";
+                            message.style.backgroundColor = "white";
+                            message.style.padding = "5px 10px";
+
+                            // Play the correct sound
+                            let correctSound = new Audio('sounds/ding.mp3');
+                            correctSound.play();
+
+                            if (!cw3ScoreAddedAct4) {
+                                score3Display.style.display = "block";
+                                cw3ScoreAddedAct4 = true;
+                                save3ScoreAct4(10);
+                            }
+                        } else {
+                            message.textContent = "INCORRECT!";
+                            message.style.color = "red";
+                            message.style.fontWeight = "bold";
+                            message.style.fontSize = "24px";
+                            message.style.borderRadius = "8px";
+                            message.style.backgroundColor = "white";
+                            message.style.padding = "5px 10px";
+
+                            // Play the incorrect sound
+                            let incorrectSound = new Audio('sounds/wrong.mp3');
+                            incorrectSound.play();
+                        }
+                    }
+                }
+
+                function save3ScoreAct4(score) {
+                    fetch("save_score_act4.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "score=" + score
+                    }).then(response => response.text()).then(data => console.log(data));
+                }
+
+                document.querySelectorAll(".crossword-box").forEach(box => {
+                    box.addEventListener("input", check3CrosswordAnswerAct4);
+                });
+            </script>
+
+
+
+        </div>
+        <div class="page" style="background-image: url('images/36.png');">
+            <!-- Question 1 -->
+            <div class="question-container q1" data-correct="A">
+
+                <label class="option-label"><input type="radio" name="q1" value="A"> A. Love of wisdom</label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> B. Service to fellowmen</label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> C. Faith in God</label>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-container q2" data-correct="B">
+
+                <label class="option-label"><input type="radio" name="q2" value="A"> A. I’m not going to pay
+                    attention.</label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> B. I will raise my hand and ask my
+                    teacher.</label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> C. I will pretend I didn’t see
+                    her.</label>
+            </div>
+
+            <!-- Audio -->
+            <audio id="correctSound" src="sounds/ding.mp3"></audio>
+            <audio id="wrongSound" src="sounds/wrong.mp3"></audio>
+
+            <script>
+                const correctSound = document.getElementById('correctSound');
+                const wrongSound = document.getElementById('wrongSound');
+
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        const container = radio.closest('.question-container');
+                        const correct = container.dataset.correct;
+                        const selected = radio.value;
+                        const labels = container.querySelectorAll('.option-label');
+
+                        labels.forEach(label => {
+                            label.classList.remove('correct', 'wrong');
+                        });
+
+                        const selectedLabel = radio.parentElement;
+
+                        if (selected === correct) {
+                            selectedLabel.classList.add('correct');
+                            correctSound.play();
+                        } else {
+                            selectedLabel.classList.add('wrong');
+                            wrongSound.play();
+                        }
+                    });
+                });
+            </script>
+        </div>
+        <div class="page" style="background-image: url('images/37.png');">
+            <!-- Question 3 -->
+            <div class="question-container q3" data-correct="A"
+                style="margin-left: -170px !important; margin-top: -270px !important;">
+
+
+                <label class="option-label"><input type="radio" name="q3" value="A"> A. I will help her carry her
+                    things.</label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> B. I will just look at
+                    her..</label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> C. I will pretend I didn’t see her.
+                </label>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-container q4" data-correct="C"
+                style="margin-left: -130px !important; margin-top: 50px !important;">
+                <label class="option-label"><input type="radio" name="q4" value="A"> A. I will listen to music.</label>
+                <label class="option-label"><input type="radio" name="q4" value="B"> B. I will drink milk.</label>
+                <label class="option-label"><input type="radio" name="q4" value="C"> C. I will pray and thank God for
+                    the day.</label>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-container q5" data-correct="B" style="margin-left: -110px !important;">
+                <label class="option-label"><input type="radio" name="q5" value="A"> A. I will not do anything.</label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> B. I will share my ideas with my
+                    groupmates.</label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> C. I will laugh at the other
+                    groups.</label>
+            </div>
+
+            <!-- Audio -->
+            <audio id="correctSoundQz" src="sounds/ding.mp3"></audio>
+            <audio id="wrongSoundQz" src="sounds/wrong.mp3"></audio>
+
+            <script>
+                (function () {
+                    const correctSound = document.getElementById('correctSoundQz');
+                    const wrongSound = document.getElementById('wrongSoundQz');
+
+                    document.querySelectorAll('.page input[type="radio"]').forEach(radio => {
+                        radio.addEventListener('change', () => {
+                            const container = radio.closest('.question-container');
+                            const correct = container.dataset.correct;
+                            const selected = radio.value;
+                            const labels = container.querySelectorAll('.option-label');
+
+                            labels.forEach(label => {
+                                label.classList.remove('correct', 'wrong');
+                            });
+
+                            const selectedLabel = radio.parentElement;
+
+                            if (selected === correct) {
+                                selectedLabel.classList.add('correct');
+                                correctSound.play();
+                            } else {
+                                selectedLabel.classList.add('wrong');
+                                wrongSound.play();
+                            }
+                        });
+                    });
+                })();
+            </script>
+
+        </div>
+        <!-- Crossword Puzzle Page -->
+        <div class="page" style="background-image: url('images/38.png');">
+
+
+        </div>
+
+        <div class="page" style="background-image: url('images/39.png');">
+            <div id="game-board" class="grid"></div>
+
+            <style>
+                .grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 80px);
+                    gap: 20px;
+                    justify-content: center;
+                    margin-top: 20px;
+                }
+
+                .card {
+                    width: 90px;
+                    height: 90px;
+                    perspective: 1000px;
+                }
+
+                .card-inner {
+                    width: 100%;
+                    height: 100%;
+                    position: relative;
+                    transform-style: preserve-3d;
+                    transition: transform 0.6s;
+                }
+
+                .card.flip .card-inner {
+                    transform: rotateY(180deg);
+                }
+
+                .card-front,
+                .card-back {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    border-radius: 10px;
+                    backface-visibility: hidden;
+                    overflow: hidden;
+                    border: 2px solid #ccc;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                /* FRONT: shows flipback.png */
+                .card-front {
+                    background-image: url('http://brahman-ubaybayin.unaux.com/images/flipback.PNG');
+                    background-size: cover;
+                    background-position: center;
+                }
+
+                /* BACK: white background, shows actual image */
+                .card-back {
+                    transform: rotateY(180deg);
+                    background-color: white;
+                }
+
+                .card-back img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 10px;
+                }
+            </style>
+
+            <audio id="flip-sound" src="sounds/flipsound.mp3" preload="auto"></audio>
+            <audio id="match-sound" src="sounds/ding.mp3" preload="auto"></audio>
+
+            <div id="game-board" class="grid"></div>
+
+            <script>
+                const images = [
+                    'images/f1.png',
+                    'images/f2.png',
+                    'images/f3.png',
+                    'images/f4.png',
+                    'images/f5.png',
+                    'images/f6.png',
+                    'images/f7.png',
+                    'images/f8.png'
+                ];
+
+                const cardImages = [...images, ...images]; // 8 pairs = 16 cards
+                cardImages.sort(() => 0.5 - Math.random()); // Shuffle cards
+
+                const board = document.getElementById('game-board');
+                const flipSound = document.getElementById('flip-sound');
+                const matchSound = document.getElementById('match-sound');
+
+                let flippedCards = [];
+                let lockBoard = false;
+
+                function createCard(image, index) {
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+                    card.dataset.image = image;
+                    card.dataset.index = index;
+
+                    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front"></div>
+        <div class="card-back">
+          <img src="${image}" alt="card image" />
+        </div>
+      </div>
+    `;
+
+                    card.addEventListener('click', () => {
+                        if (lockBoard || card.classList.contains('matched') || card === flippedCards[0]) return;
+
+                        // 🔊 Play flip sound
+                        flipSound.currentTime = 0;
+                        flipSound.play();
+
+                        card.classList.add('flip');
+                        flippedCards.push(card);
+
+                        if (flippedCards.length === 2) {
+                            lockBoard = true;
+                            checkMatch();
+                        }
+                    });
+
+                    board.appendChild(card);
+                }
+
+                function checkMatch() {
+                    const [card1, card2] = flippedCards;
+                    if (card1.dataset.image === card2.dataset.image) {
+                        card1.classList.add('matched');
+                        card2.classList.add('matched');
+
+                        // 🔊 Play match sound
+                        matchSound.currentTime = 0;
+                        matchSound.play();
+
+                        resetFlippedCards();
+                    } else {
+                        setTimeout(() => {
+                            card1.classList.remove('flip');
+                            card2.classList.remove('flip');
+                            resetFlippedCards();
+                        }, 1000);
+                    }
+                }
+
+                function resetFlippedCards() {
+                    flippedCards = [];
+                    lockBoard = false;
+                }
+
+                // Initialize the board
+                cardImages.forEach((img, idx) => createCard(img, idx));
+            </script>
+
+
+        </div>
+        <div class="page" style="background-image: url('images/40.png'); position: relative;">
+            <!-- Instructions -->
+            <div style="position: absolute; top: 30px; left: 60px; right: 40px; padding: 20px;">
+                <p style="margin-top: 40px; margin-left: -10px;">
+                    Instructions:<br>
+                    Listen carefully and choose the correct spelling of the word from the options given.
+                </p>
+
+            </div>
+
+            <!-- Question 1 -->
+            <div
+                style="position: absolute; top: 180px; left: 70px; display: flex; align-items: center; justify-content: space-between; width: 400px; padding: 20px; margin-right:-90px;">
+                <div>
+                    <h3>Question 1</h3>
+                    <label><input type="radio" name="q1" value="A" onclick="checkAnswer(this, 'B', 'q1')">
+                        preyr</label><br>
+                    <label><input type="radio" name="q1" value="B" onclick="checkAnswer(this, 'B', 'q1')">
+                        pray</label><br>
+                    <label><input type="radio" name="q1" value="C" onclick="checkAnswer(this, 'B', 'q1')"> prae</label>
+                </div>
+                <button onclick="playQuestion('questionAudio1')"
+                    style="border: none; background: none; cursor: pointer;">
+                    <img src="images/playr.png" alt="Play" style="width: 60px; height: 60px;">
+                </button>
+            </div>
+
+            <!-- Question 2 -->
+            <div
+                style="position: absolute; top: 320px; left: 70px; display: flex; align-items: center; justify-content: space-between; width: 400px; padding: 20px; margin-right:-90px;">
+                <div>
+                    <h3>Question 2</h3>
+                    <label><input type="radio" name="q2" value="A" onclick="checkAnswer(this, 'C', 'q2')">
+                        skool</label><br>
+                    <label><input type="radio" name="q2" value="B" onclick="checkAnswer(this, 'C', 'q2')">
+                        scool</label><br>
+                    <label><input type="radio" name="q2" value="C" onclick="checkAnswer(this, 'C', 'q2')">
+                        school</label>
+                </div>
+                <button onclick="playQuestion('questionAudio2')"
+                    style="border: none; background: none; cursor: pointer;">
+                    <img src="images/playr.png" alt="Play" style="width: 60px; height: 60px;">
+                </button>
+            </div>
+
+            <!-- Question 3 -->
+            <div
+                style="position: absolute; top: 460px; left: 70px; display: flex; align-items: center; justify-content: space-between; width: 400px; padding: 20px; margin-right:-90px;">
+                <div>
+                    <h3>Question 3</h3>
+                    <label><input type="radio" name="q3" value="A" onclick="checkAnswer(this, 'A', 'q3')">
+                        understand</label><br>
+                    <label><input type="radio" name="q3" value="B" onclick="checkAnswer(this, 'A', 'q3')">
+                        anderstan</label><br>
+                    <label><input type="radio" name="q3" value="C" onclick="checkAnswer(this, 'A', 'q3')">
+                        understant</label>
+                </div>
+                <button onclick="playQuestion('questionAudio3')"
+                    style="border: none; background: none; cursor: pointer;">
+                    <img src="images/playr.png" alt="Play" style="width: 60px; height: 60px;">
+                </button>
+            </div>
+
+            <!-- Audio Elements -->
+            <audio id="questionAudio1" src="sounds/PRAY.mp3"></audio>
+            <audio id="questionAudio2" src="sounds/SCHOOL.mp3"></audio>
+            <audio id="questionAudio3" src="sounds/S3.mp3"></audio>
+            <audio id="correctAudio" src="sounds/ding.mp3"></audio>
+            <audio id="wrongAudio" src="sounds/wrong.mp3"></audio>
+
+            <!-- JS Logic -->
+            <script>
+                function playQuestion(audioId) {
+                    document.getElementById(audioId).play();
+                }
+
+                function checkAnswer(input, correctAnswer, questionName) {
+                    const selected = input.value;
+                    const correctAudio = document.getElementById('correctAudio');
+                    const wrongAudio = document.getElementById('wrongAudio');
+
+                    if (selected === correctAnswer) {
+                        correctAudio.play();
+                    } else {
+                        wrongAudio.play();
+                    }
+                }
+            </script>
+        </div>
+        <div class="page" style="background-image: url('images/41.png');">
+            <!-- Question 4 -->
+            <div
+                style="position: absolute; top: 30px; left: 70px; display: flex; align-items: center; justify-content: space-between; width: 400px; padding: 20px;">
+                <div>
+                    <h3>Question 4</h3>
+                    <label><input type="radio" name="q4" value="A" onclick="checkAnswer(this, 'B', 'q4')">
+                        assignmint</label><br>
+                    <label><input type="radio" name="q4" value="B" onclick="checkAnswer(this, 'B', 'q4')">
+                        assignment</label><br>
+                    <label><input type="radio" name="q4" value="C" onclick="checkAnswer(this, 'B', 'q4')">
+                        asignement</label>
+                </div>
+                <button onclick="playQuestion('questionAudio4')"
+                    style="border: none; background: none; cursor: pointer;">
+                    <img src="images/playr.png" alt="Play" style="width: 60px; height: 60px;">
+                </button>
+            </div>
+
+            <!-- Question 5 -->
+            <div
+                style="position: absolute; top: 160px; left: 70px; display: flex; align-items: center; justify-content: space-between; width: 400px; padding: 20px;">
+                <div>
+                    <h3>Question 5</h3>
+                    <label><input type="radio" name="q5" value="A" onclick="checkAnswer(this, 'B', 'q5')">
+                        kindnes</label><br>
+                    <label><input type="radio" name="q5" value="B" onclick="checkAnswer(this, 'B', 'q5')">
+                        kindness</label><br>
+                    <label><input type="radio" name="q5" value="C" onclick="checkAnswer(this, 'B', 'q5')">
+                        kindniss</label>
+                </div>
+                <button onclick="playQuestion('questionAudio5')"
+                    style="border: none; background: none; cursor: pointer;">
+                    <img src="images/playr.png" alt="Play" style="width: 60px; height: 60px;">
+                </button>
+            </div>
+
+            <!-- Question 6 -->
+            <div
+                style="position: absolute; top: 290px; left: 70px; display: flex; align-items: center; justify-content: space-between; width: 400px; padding: 20px;">
+                <div>
+                    <h3>Question 6</h3>
+                    <label><input type="radio" name="q6" value="A" onclick="checkAnswer(this, 'B', 'q6')">
+                        kwestion</label><br>
+                    <label><input type="radio" name="q6" value="B" onclick="checkAnswer(this, 'B', 'q6')">
+                        question</label><br>
+                    <label><input type="radio" name="q6" value="C" onclick="checkAnswer(this, 'B', 'q6')">
+                        questian</label>
+                </div>
+                <button onclick="playQuestion('questionAudio6')"
+                    style="border: none; background: none; cursor: pointer;">
+                    <img src="images/playr.png" alt="Play" style="width: 60px; height: 60px;">
+                </button>
+            </div>
+
+            <!-- Question 7 -->
+            <div
+                style="position: absolute; top: 420px; left: 70px; display: flex; align-items: center; justify-content: space-between; width: 400px; padding: 20px;">
+                <div>
+                    <h3>Question 7</h3>
+                    <label><input type="radio" name="q7" value="A" onclick="checkAnswer(this, 'A', 'q7')">
+                        thanks</label><br>
+                    <label><input type="radio" name="q7" value="B" onclick="checkAnswer(this, 'A', 'q7')">
+                        thanx</label><br>
+                    <label><input type="radio" name="q7" value="C" onclick="checkAnswer(this, 'A', 'q7')">
+                        thancs</label>
+                </div>
+                <button onclick="playQuestion('questionAudio7')"
+                    style="border: none; background: none; cursor: pointer;">
+                    <img src="images/playr.png" alt="Play" style="width: 60px; height: 60px;">
+                </button>
+            </div>
+
+            <!-- Audio Elements -->
+            <audio id="questionAudio4" src="sounds/A4.mp3"></audio>
+            <audio id="questionAudio5" src="sounds/K5.mp3"></audio>
+            <audio id="questionAudio6" src="sounds/Q6.mp3"></audio>
+            <audio id="questionAudio7" src="sounds/THANKS.mp3"></audio>
+            <audio id="correctAudio" src="sounds/ding.mp3"></audio>
+            <audio id="wrongAudio" src="sounds/wrong.mp3"></audio>
+
+            <!-- JS Logic -->
+            <script>
+                function playQuestion(audioId) {
+                    document.getElementById(audioId).play();
+                }
+
+                function checkAnswer(input, correctAnswer, questionName) {
+                    const selected = input.value;
+                    const correctAudio = document.getElementById('correctAudio');
+                    const wrongAudio = document.getElementById('wrongAudio');
+
+                    if (selected === correctAnswer) {
+                        correctAudio.play();
+                    } else {
+                        wrongAudio.play();
+                    }
+                }
+            </script>
+        </div>
+
+        <div class="page" style="background-image: url('images/42.png');">
+            <div class="matching-game">
+                <div class="column" id="left-column" style="margin-top: 100px;">
+                    <div class="item" data-value="A"><img src="images/am1.png" alt="Apple"></div>
+                    <div class="item" data-value="B"><img src="images/am2.png" alt="Banana"></div>
+                    <div class="item" data-value="C"><img src="images/am3.png" alt="Carrot"></div>
+                </div>
+
+                <!-- Updated SVG container for lines -->
+                <svg class="line-container" id="line-container" width="100%" height="100%"></svg>
+
+                <div class="column" id="right-column" style="margin-top: 100px;">
+                    <div class="item" data-value="B"><img src="images/m1.png" alt="Carrot"></div>
+                    <div class="item" data-value="A"><img src="images/m2.png" alt="Apple"></div>
+                    <div class="item" data-value="C"><img src="images/m3.png" alt="Banana"></div>
+                </div>
+            </div>
+
+            <!-- CORRECT Message at the bottom -->
+            <p id="correct-message" style="
+        display: none;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: green;
+        margin-top: 20px;
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+    ">
+                CORRECT!
+            </p>
+        </div>
+
+        <!-- The target div where "Great Job Ubian!" will appear -->
+        <div class="page" style="background-image: url('images/43.png');">
+            <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+            <p id="congrats-message" style="
+    font-family: 'Anton', sans-serif;
+    font-size: 60px;
+    font-weight: bold;
+    color: white;
+    margin: 20px auto;
+    display: none;
+    text-transform: uppercase;
+    background-color: #28a745; /* Bright green */
+    padding: 20px 40px;
+    border-radius: 15px;
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    max-width: fit-content;
+">
+                Great Job Ubian!
+            </p>
+
+        </div>
+    </div>
+
+    <script>
+        let selectedItems = [];
+        let matchedPairs = new Set();
+        const totalPairs = document.querySelectorAll("#left-column .item").length;
+
+        function drawLine(start, end) {
+            const svg = document.getElementById("line-container");
+            const rect = svg.getBoundingClientRect();
+            const startRect = start.getBoundingClientRect();
+            const endRect = end.getBoundingClientRect();
+
+            const x1 = startRect.left + startRect.width / 2 - rect.left;
+            const y1 = startRect.top + startRect.height / 2 - rect.top;
+            const x2 = endRect.left + endRect.width / 2 - rect.left;
+            const y2 = endRect.top + endRect.height / 2 - rect.top;
+
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x1);
+            line.setAttribute("y1", y1);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y2", y2);
+            line.setAttribute("stroke", "blue");
+            line.setAttribute("stroke-width", "4");
+            line.setAttribute("stroke-linecap", "round");
+            svg.appendChild(line);
+        }
+
+        function checkCompletion() {
+            if (matchedPairs.size === totalPairs) {
+                document.getElementById("congrats-message").style.display = "block";
+                document.getElementById("correct-message").style.display = "block";
+
+                // Play ding sound
+                const dingSound = new Audio('sounds/ding.mp3');
+                dingSound.play();
+            }
+        }
+
+        document.querySelectorAll(".item").forEach(item => {
+            item.addEventListener("click", function () {
+                if (selectedItems.length < 2 && !selectedItems.includes(this) && !matchedPairs.has(this.dataset.value)) {
+                    this.style.border = "2px solid blue";
+                    selectedItems.push(this);
+                }
+
+                if (selectedItems.length === 2) {
+                    if (selectedItems[0].dataset.value === selectedItems[1].dataset.value) {
+                        selectedItems.forEach(el => {
+                            el.style.border = "2px solid green";
+                            matchedPairs.add(el.dataset.value);
+                        });
+                        drawLine(selectedItems[0], selectedItems[1]);
+                        checkCompletion();
+                    } else {
+                        setTimeout(() => {
+                            selectedItems.forEach(el => el.style.border = "none");
+                        }, 500);
+                    }
+                    selectedItems = [];
+                }
+            });
+        });
+    </script>
+
+
+    <style>
+        .matching-game {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 400px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            margin: 120px 20px 2px 20px;
+        }
+
+        .item {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .line-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+    </div>
+    <!-- Blank page -->
+    <div class="hard"></div>
+    <!-- Back cover -->
+    <div class="hard" style="background-image: url('images/UBAYBAYIN FINALpng.png');">
+    </div>
+    </div>
+    <script src="jquery.js"></script>
+    <script src="turn.js"></script>
+    <script>
+        $(".flipbook").turn({
+            width: 1000,
+            height: 600,
+            autoCenter: true,
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            const answer = ["H", "E", "L", "P"]; // Correct answer
+            let hintUsed = false; // Track if the hint is used
+
+            const boxes = document.querySelectorAll(".crossword-box");
+            const resultMessage = document.getElementById("result-message");
+            const hintButton = document.getElementById("hint-button");
+
+            // Handle hint button click
+            hintButton.addEventListener("click", () => {
+                if (!hintUsed) {
+                    for (let i = 0; i < boxes.length; i++) {
+                        if (boxes[i].value.trim() === "") {
+                            boxes[i].value = answer[i];
+                            boxes[i].readOnly = true; // Prevent editing the revealed hint
+                            hintUsed = true;
+                            hintButton.disabled = true; // Disable the button
+                            hintButton.innerText = "Hint Used!";
+                            break;
+                        }
+                    }
+                }
+            });
+
+            // Add event listeners to input boxes
+            boxes.forEach((box, index) => {
+                box.addEventListener("input", () => {
+                    // Ensure only uppercase letters are entered
+                    box.value = box.value.toUpperCase().trim().charAt(0);
+                    checkAnswer();
+                });
+            });
+
+            // Function to check if all answers are correct
+            function checkAnswer() {
+                const userAnswer = Array.from(boxes).map(box => box.value.trim().toUpperCase());
+
+                // Ensure all boxes are filled before checking
+                if (userAnswer.includes("")) {
+                    resultMessage.textContent = ""; // Clear message if not all boxes are filled
+                    return;
+                }
+
+                if (JSON.stringify(userAnswer) === JSON.stringify(answer)) {
+                    resultMessage.textContent = "Correct!";
+                    resultMessage.style.color = "green";
+
+                    // Apply glow effect to all boxes
+                    boxes.forEach(box => box.classList.add("correct-answer"));
+                } else {
+                    resultMessage.textContent = ""; // Clear message if incorrect
+                    boxes.forEach(box => box.classList.remove("correct-answer"));
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

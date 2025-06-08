@@ -6,39 +6,63 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../login.php');
     exit();
 }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $first_name = htmlspecialchars($_POST['name']);
-    $last_name = htmlspecialchars($_POST['surname']);
-    $mobile = htmlspecialchars($_POST['mobile']);
-    $birthday = htmlspecialchars($_POST['birthday']);
-    $is_vip = htmlspecialchars($_POST['is_vip']);
-    $vip = isset($_POST['vip']) ? htmlspecialchars($_POST['vip']) : null;
-    $valid_until = isset($_POST['valid_until']) ? htmlspecialchars($_POST['valid_until']) : null;
+    function sanitizeOrNull($conn, $value)
+    {
+        return empty($value) ? 'NULL' : $conn->quote(htmlspecialchars($value));
+    }
 
-    $first_name = $conn->quote($first_name);
-    $last_name = $conn->quote($last_name);
-    $mobile = $conn->quote($mobile);
-    $birthday = $conn->quote($birthday);
-    $is_vip = (int) $is_vip;
-    $vip_value = $vip !== null ? $conn->quote($vip) : 'NULL';
-    $valid_until_value = $valid_until !== null ? $conn->quote($valid_until) : 'NULL';
+    $first_name = sanitizeOrNull($conn, $_POST['name']);
+    $last_name = sanitizeOrNull($conn, $_POST['surname']);
+    $mobile = sanitizeOrNull($conn, $_POST['mobile']);
+    $birthday = sanitizeOrNull($conn, $_POST['birthday']);
+    $is_vip = isset($_POST['is_vip']) ? (int)$_POST['is_vip'] : 0;
+    $vip_value = sanitizeOrNull($conn, $_POST['vip'] ?? null);
+    $valid_until_value = sanitizeOrNull($conn, $_POST['valid_until'] ?? null);
 
-    $sql = "INSERT INTO tbl_clients (first_name, last_name, mobile, birthday, is_vip, vip, valid_until)
-    VALUES ($first_name, $last_name, $mobile, $birthday, $is_vip, $vip_value, $valid_until_value)";
+    $upload_dir = '../uploads/form_client/';
 
+    function uploadOrNull($file_key, $upload_dir)
+    {
+        if (!empty($_FILES[$file_key]['name'])) {
+            $filename = basename($_FILES[$file_key]['name']);
+            $target_path = $upload_dir . $filename;
+            if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $target_path)) {
+                return $filename;
+            }
+        }
+        return null;
+    }
 
+    $medical_history = uploadOrNull('medical_history', $upload_dir);
+    $consent_waiver = uploadOrNull('consent_waiver', $upload_dir);
+    $vip_tc = uploadOrNull('vip_t&c', $upload_dir);
+    $treatment_form = uploadOrNull('treatment_form', $upload_dir);
+
+    $mh = $medical_history !== null ? $conn->quote($medical_history) : 'NULL';
+    $cw = $consent_waiver !== null ? $conn->quote($consent_waiver) : 'NULL';
+    $vtc = $vip_tc !== null ? $conn->quote($vip_tc) : 'NULL';
+    $tf = $treatment_form !== null ? $conn->quote($treatment_form) : 'NULL';
+
+    $sql = "INSERT INTO tbl_clients (
+        first_name, last_name, mobile, birthday, is_vip, vip, valid_until,
+        medical_history, consent_waiver, vip_t_c, treatment_form
+    ) VALUES (
+        $first_name, $last_name, $mobile, $birthday, $is_vip, $vip_value, $valid_until_value,
+        $mh, $cw, $vtc, $tf
+    )";
 
     if ($conn->exec($sql)) {
         $_SESSION['success'] = 'Client added successfully';
-        header('location: add_customer.php');
-        exit();
     } else {
         $_SESSION['error'] = 'Error adding client';
-        header('location: add_customer.php');
-        exit();
     }
+
+    header('location: add_customer.php');
+    exit();
 }
+
+
 
 ?>
 
