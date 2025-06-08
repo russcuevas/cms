@@ -150,50 +150,109 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                             <!-- ADD MODAL -->
                             <div class="modal fade" id="addStaffModal" tabindex="-1" role="dialog" style="display: none;">
-                                <div class="modal-dialog" role="document">
+                                <div class="modal-dialog modal-lg" role="document"> <!-- Make modal large -->
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h4 class="modal-title" id="defaultModalLabel">Add Staff</h4>
                                         </div>
                                         <div class="modal-body" style="max-height: 100vh; overflow-y: auto;">
-                                            <form id="add_staff_validation" method="POST" style="margin-top:10px;">
-                                                <!-- Fullname -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="text" class="form-control" name="fullname" required>
-                                                        <label class="form-label">Fullname</label>
-                                                    </div>
-                                                </div>
+                                            <form id="add_staff_validation" method="POST">
+                                                <div class="row">
+                                                    <!-- LEFT COLUMN: Personal Information -->
+                                                    <div class="col-md-6">
+                                                        <h5>Personal Information</h5><br>
+                                                        <!-- Fullname -->
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="text" class="form-control" name="fullname" required>
+                                                                <label class="form-label">Fullname</label>
+                                                            </div>
+                                                        </div>
 
-                                                <!-- Mobile -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="number" class="form-control" name="mobile" required>
-                                                        <label class="form-label">Mobile</label>
-                                                    </div>
-                                                </div>
+                                                        <!-- Mobile -->
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="number" class="form-control" name="mobile" required>
+                                                                <label class="form-label">Mobile</label>
+                                                            </div>
+                                                        </div>
 
-                                                <!-- Birthday -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="date" class="form-control" name="birthday" required>
-                                                        <label class="form-label">Birthday</label>
-                                                    </div>
-                                                </div>
+                                                        <!-- Birthday -->
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="date" class="form-control" name="birthday" required>
+                                                                <label class="form-label">Birthday</label>
+                                                            </div>
+                                                        </div>
 
-                                                <!-- Email -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="email" class="form-control" name="email" required>
-                                                        <label class="form-label">Email</label>
-                                                    </div>
-                                                </div>
+                                                        <!-- Email -->
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="email" class="form-control" name="email" required>
+                                                                <label class="form-label">Email</label>
+                                                            </div>
+                                                        </div>
 
-                                                <!-- Password -->
-                                                <div class="form-group form-float">
-                                                    <div class="form-line">
-                                                        <input type="password" class="form-control" name="password" maxlength="12" minlength="6" required>
-                                                        <label class="form-label">Password</label>
+                                                        <!-- Password -->
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="password" class="form-control" name="password" maxlength="12" minlength="6" required>
+                                                                <label class="form-label">Password</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- RIGHT COLUMN: Bank Details -->
+                                                    <div class="col-md-6">
+                                                        <h5>Bank Details</h5><br>
+
+                                                        <!-- SSS -->
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="text" class="form-control" name="sss">
+                                                                <label class="form-label">SSS#</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Pag-IBIG -->
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="text" class="form-control" name="pagibig">
+                                                                <label class="form-label">Pag-IBIG#</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- PhilHealth -->
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="text" class="form-control" name="philhealth">
+                                                                <label class="form-label">PhilHealth#</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Mode of Salary -->
+                                                        <div class="form-group">
+                                                            <label for="mode_of_salary">Mode of Salary</label>
+                                                            <select class="form-control select-form" name="mode_of_salary" required>
+                                                                <option value="">-- Please select --</option>
+                                                                <option value="GCASH">GCASH</option>
+                                                                <option value="BANK">BANK</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="text" class="form-control" name="gcash_number">
+                                                                <label class="form-label">GCASH #</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group form-float">
+                                                            <div class="form-line">
+                                                                <input type="text" class="form-control" name="philhealth">
+                                                                <label class="form-label">BANK #</label>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -207,6 +266,7 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                 </div>
                             </div>
+
                             <!-- END ADD MODAL -->
 
                             <div class="table-responsive">
@@ -262,7 +322,6 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="plugins/bootstrap/js/bootstrap.js"></script>
 
     <!-- Select Plugin Js -->
-    <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
 
     <!-- Slimscroll Plugin Js -->
     <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>

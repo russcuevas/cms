@@ -249,7 +249,7 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="row clearfix">
                 <!-- LEFT COLUMN - Appointments -->
-                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
                             <h2>
@@ -283,7 +283,7 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
                 <!-- RIGHT COLUMN - Calendar -->
-                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
                             <h2>ADD APPOINTMENT</h2>
@@ -375,19 +375,27 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 height: 500,
+                events: {
+                    url: 'get_all_appointments.php',
+                    method: 'GET',
+                    failure: function() {
+                        alert('Error fetching appointments!');
+                    }
+                },
                 dateClick: function(info) {
                     swal({
                         title: "Add Appointment",
-                        content: createCustomForm(info.dateStr), // pass date here
+                        content: createCustomForm(info.dateStr),
                         buttons: {
                             cancel: true,
                             confirm: {
                                 text: "Save",
+                                value: "save",
                                 closeModal: false
                             }
                         }
                     }).then((value) => {
-                        if (value) {
+                        if (value === "save") {
                             const fullname = document.getElementById('swal-fullname').value;
                             const remarks = document.getElementById('swal-remarks').value;
 
@@ -402,7 +410,7 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 appointment_datetime: info.dateStr + ' ' + new Date().toTimeString().split(' ')[0]
                             };
 
-                            // Send to PHP via AJAX
+                            // Save to PHP
                             $.ajax({
                                 url: 'save_appointment.php',
                                 method: 'POST',
@@ -416,11 +424,62 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     }
                                 }
                             });
+
                         }
                     });
                 },
+                eventClick: function(info) {
+                    const clickedDate = info.event.startStr;
+                    loadAppointments(clickedDate);
+                }
             });
+
             calendar.render();
+
+            function loadAppointments(dateStr) {
+                $.ajax({
+                    url: 'get_appointments_by_date.php',
+                    method: 'POST',
+                    data: {
+                        date: dateStr
+                    },
+                    success: function(response) {
+                        const appointments = JSON.parse(response);
+
+                        if (appointments.length === 0) {
+                            swal("No Appointments", `No appointments found on ${dateStr}.`, "info");
+                            return;
+                        }
+
+                        let table = `<table style="width:100%; border-collapse: collapse;" border="1">
+                    <thead><tr>
+                        <th style="padding: 5px;">Fullname</th>
+                        <th style="padding: 5px;">Remarks</th>
+                    </tr></thead><tbody>`;
+
+                        appointments.forEach(appt => {
+                            const time = new Date(appt.appointment_datetime).toLocaleTimeString();
+                            table += `<tr>
+                        <td style="padding: 5px;">${appt.fullname}</td>
+                        <td style="padding: 5px;">${appt.remarks}</td>
+                    </tr>`;
+                        });
+
+                        table += `</tbody></table>`;
+
+                        swal({
+                            title: `Appointments on ${dateStr}`,
+                            content: $(table)[0],
+                            buttons: {
+                                confirm: {
+                                    text: "Close",
+                                    closeModal: true
+                                }
+                            }
+                        });
+                    }
+                });
+            }
 
             function formatDate(dateStr) {
                 const months = [
@@ -436,7 +495,6 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             function createCustomForm(dateStr) {
                 const wrapper = document.createElement("div");
-
                 const formattedDate = formatDate(dateStr);
 
                 const dateDisplay = document.createElement("div");
@@ -479,10 +537,10 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 return wrapper;
             }
-
-
         });
     </script>
+
+
 
     <script>
         function updateDateTime() {
