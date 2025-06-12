@@ -169,7 +169,10 @@ if (!$remark) {
                                     <p><strong>Attached File:</strong></p>
 
                                     <?php if (in_array($fileExtension, $imageExtensions)): ?>
-                                        <img src="<?= $filePath ?>" class="img-fluid rounded" alt="Remark Image" style="max-width: 300px;">
+                                        <!-- Image that opens in a new page -->
+                                        <a href="<?= $filePath ?>" target="_blank" data-lightbox="remark-image" data-title="Remark Image">
+                                            <img src="<?= $filePath ?>" class="img-fluid rounded" alt="Remark Image" style="max-width: 300px;">
+                                        </a>
 
                                     <?php elseif ($fileExtension === 'pdf'): ?>
                                         <a style="margin-bottom: 10px;" href="<?= $filePath ?>" download class="btn bg-red">
@@ -190,6 +193,8 @@ if (!$remark) {
                             <?php endif; ?>
 
 
+
+
                             <div class="text-right">
                                 <a href="view_remarks.php?id=<?= $remark['client_id'] ?>" class="btn bg-red mt-4">Back to Notes</a>
                             </div>
@@ -200,6 +205,11 @@ if (!$remark) {
             <!-- #END# Basic Validation -->
         </div>
     </section>
+    <!-- Lightbox2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css" rel="stylesheet">
+
+    <!-- Lightbox2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
 
     <!-- Jquery Core Js -->
     <script src="plugins/jquery/jquery.min.js"></script>
@@ -268,6 +278,15 @@ if (!$remark) {
         });
     </script>
     <!-- END SHOW VIP -->
+
+    <script>
+        lightbox.option({
+            'resizeDuration': 200, // Duration for resizing image
+            'wrapAround': true, // Allow wrapping around the images (i.e., cycling through them)
+            'albumLabel': "Image %1 of %2" // Label format for images
+        });
+    </script>
+
 
 </body>
 

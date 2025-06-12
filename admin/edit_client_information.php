@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $medical_history = uploadFile('medical_history');
     $consent_waiver = uploadFile('consent_waiver');
-    $vip_tc = uploadFile('vip_t&c');
+    $vip_t_c = uploadFile('vip_t_c');
     $treatment_form = uploadFile('treatment_form');
 
     // Fetch old filenames from DB to keep if no new file uploaded
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $medical_history = $medical_history !== null ? $medical_history : $existing['medical_history'];
     $consent_waiver = $consent_waiver !== null ? $consent_waiver : $existing['consent_waiver'];
-    $vip_tc = $vip_tc !== null ? $vip_tc : $existing['vip_t_c'];
+    $vip_t_c = $vip_t_c !== null ? $vip_t_c : $existing['vip_t_c'];
     $treatment_form = $treatment_form !== null ? $treatment_form : $existing['treatment_form'];
 
     // Prepare update statement
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $valid_until,
         $medical_history,
         $consent_waiver,
-        $vip_tc,
+        $vip_t_c,
         $treatment_form,
         $client_id
     ]);
@@ -352,12 +352,12 @@ if (!$client) {
                                             <!-- VIP TERMS AND CONDITIONS -->
                                             <div class="form-group form-float">
                                                 <div class="form-line">
-                                                    <input type="file" class="form-control" name="vip_t&c">
+                                                    <input type="file" class="form-control" name="vip_t_c">
                                                     <label class="form-label">EDIT FILE VIP TERMS AND CONDITION</label>
                                                 </div>
-                                                <?php if (!empty($client['vip_tc'])): ?>
+                                                <?php if (!empty($client['vip_t_c'])): ?>
                                                     <small>
-                                                        <a href="<?= $basePath . $client['vip_tc'] ?>" target="_blank">View Current File</a>
+                                                        <a href="<?= $basePath . $client['vip_t_c'] ?>" target="_blank">View Current File</a>
                                                     </small>
                                                 <?php endif; ?>
                                             </div>

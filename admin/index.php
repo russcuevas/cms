@@ -206,7 +206,7 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" onclick="window.location.href='guest_clients.php';">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" onclick="window.location.href='vip_clients.php';">
                     <div class="info-box bg-teal hover-expand-effect" style="cursor: pointer;">
                         <div class="icon">
                             <i class="material-icons">verified</i>

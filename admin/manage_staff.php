@@ -204,7 +204,7 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                                     <!-- RIGHT COLUMN: Bank Details -->
                                                     <div class="col-md-6">
-                                                        <h5>Bank Details</h5><br>
+                                                        <h5>Other Details</h5><br>
 
                                                         <!-- SSS -->
                                                         <div class="form-group form-float">
@@ -232,25 +232,36 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                                         <!-- Mode of Salary -->
                                                         <div class="form-group">
-                                                            <label for="mode_of_salary">Mode of Salary</label>
-                                                            <select class="form-control select-form" name="mode_of_salary" required>
-                                                                <option value="">-- Please select --</option>
-                                                                <option value="GCASH">GCASH</option>
-                                                                <option value="BANK">BANK</option>
-                                                            </select>
+                                                            <label for="mode_of_salary">SELECT MODE OF SALARY</label><br>
+
+                                                            <input type="radio" name="mode_of_salary" value="BPI" onclick="showField('bpi')" id="bpi" class="with-gap">
+                                                            <label for="bpi">BPI</label>
+
+                                                            <input type="radio" name="mode_of_salary" value="BDO" onclick="showField('bdo')" id="bdo" class="with-gap">
+                                                            <label for="bdo">BDO</label>
+
+                                                            <input type="radio" name="mode_of_salary" value="GCASH" onclick="showField('gcash')" id="gcash" class="with-gap">
+                                                            <label for="gcash">GCASH</label>
                                                         </div>
 
-                                                        <div class="form-group form-float">
+                                                        <div id="bpi_field" class="form-group form-float" style="display:none;">
                                                             <div class="form-line">
-                                                                <input type="text" class="form-control" name="gcash_number">
-                                                                <label class="form-label">GCASH #</label>
+                                                                <input type="text" class="form-control" name="bpi_number">
+                                                                <label class="form-label">BPI #</label>
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-group form-float">
+                                                        <div id="bdo_field" class="form-group form-float" style="display:none;">
                                                             <div class="form-line">
-                                                                <input type="text" class="form-control" name="philhealth">
-                                                                <label class="form-label">BANK #</label>
+                                                                <input type="text" class="form-control" name="bdo_number">
+                                                                <label class="form-label">BDO #</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="gcash_field" class="form-group form-float" style="display:none;">
+                                                            <div class="form-line">
+                                                                <input type="text" class="form-control" name="gcash_number">
+                                                                <label class="form-label">GCASH #</label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -293,8 +304,9 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <td><?php echo $staff['created_at'] ?></td>
                                                 <td><?php echo $staff['updated_at'] ?></td>
                                                 <td>
-                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#edit_<?php echo $staff['id']; ?>">Edit</a>
-                                                    <a href="" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#delete_<?php echo $staff['id']; ?>">Remove</a>
+                                                    <a href="view_payslip.php?id=<?php echo $staff['id']; ?>" style="margin-bottom: 5px;" class="btn bg-teal waves-effect">View Payslip</a>
+                                                    <a href="edit_staff.php?id=<?php echo $staff['id']; ?>" style="margin-bottom: 5px;" class="btn bg-teal waves-effect">Edit Details</a>
+                                                    <a href="" class="btn bg-teal waves-effect" style="margin-bottom: 5px;" data-toggle="modal" data-target="#delete_<?php echo $staff['id']; ?>">Remove</a>
                                                     <!-- MODAL -->
                                                     <?php include 'modal/manage_staff.php' ?>
                                                     <!-- END MODAL -->
@@ -363,6 +375,22 @@ $staffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
+    </script>
+
+    <script>
+        function showField(option) {
+            document.getElementById('bpi_field').style.display = 'none';
+            document.getElementById('bdo_field').style.display = 'none';
+            document.getElementById('gcash_field').style.display = 'none';
+
+            if (option === 'bpi') {
+                document.getElementById('bpi_field').style.display = 'block';
+            } else if (option === 'bdo') {
+                document.getElementById('bdo_field').style.display = 'block';
+            } else if (option === 'gcash') {
+                document.getElementById('gcash_field').style.display = 'block';
+            }
+        }
     </script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>

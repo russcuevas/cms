@@ -1,0 +1,29 @@
+Homepage - Here showing all the offered course
+
+Admin Panel
+
+Dashboard Page -> showing Data Analytics where in showing the number of total admin, total examinees, total course, also some graphs yearly examinees, examiners based on sex, UB offered courses, and Top Preffered Course and the RIASEC Based scores knowing all the type ng mga people kung san sila magaling a description
+
+Admin Management Page -> where in you can add another admin edit and also delete
+
+Examinees Management Page ->
+Add Examiners - In this page can add an new examiners taking the RIASEC TEST
+Examinees List - In this page showing the List of Examinees also you can filter it months and years and print based on the selected month or year for the button you can view and delete also
+
+Assesstment Management Page ->
+Course - In this page you can add available course in the University of Batangas also delete and edit it
+Riasec - In this page you can put the related course and career pathway in the said Test where in if the user taking the exam the algorithm in the riasec page it will calculate on the result of the user also you can edit and delete it
+Questionnaire - In this page you can add question with the related career pathway and also you can print this and also you can edit and delete it
+
+Exam Results Page - here you can filter by year and month and showing the results of each examiners taking the RIASEC Test if view the result it shows the result takin by the user and the suggested course and points the top 3 of each the total points of each
+
+
+
+Examiners - after you logged in it will direct to you will choosing the course you preffered after you fill it out --
+
+Assesstment Page - you will proceed to assesstment exam where in every question theres a corresponding RIASEC result of each true or false answer
+after you submit
+
+Result Page - it will email in the user account the result and it will display and navigate the result in the user page
+
+Also this system is mobile responsive it can be accessable in all devices 

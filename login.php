@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt_staff->rowCount() == 1) {
             $staff = $stmt_staff->fetch(PDO::FETCH_ASSOC);
             if ($password === $staff['password']) {
-                $_SESSION['admin_id'] = $staff['id'];
+                $_SESSION['staff_id'] = $staff['id'];
                 $_SESSION['email'] = $staff['email'];
                 $_SESSION['fullname'] = $staff['fullname'];
                 $_SESSION['role'] = $staff['role'];

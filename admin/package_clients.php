@@ -139,7 +139,7 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card">
                         <div class="header">
                             <h2>
-                                LIST OF GUEST CLIENTS
+                                LIST OF PACKAGE CLIENTS
                             </h2>
                         </div>
                         <div class="body">

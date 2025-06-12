@@ -251,9 +251,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <br>
 
                                             <label class="form-label">CLIENT VIP TERMS AND CONDITION FORM : </label>
-                                            <?php if (!empty($client['vip_tc'])): ?>
+                                            <?php if (!empty($client['vip_t_c'])): ?>
                                                 <small>
-                                                    <a href="<?= $basePath . $client['vip_tc'] ?>" target="_blank">View Current File</a>
+                                                    <a href="<?= $basePath . $client['vip_t_c'] ?>" target="_blank">View Current File</a>
                                                 </small>
                                             <?php else: ?>
                                                 <small style="color: red;">NO UPLOADED FILE</small>

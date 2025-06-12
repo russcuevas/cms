@@ -36,12 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $medical_history = uploadOrNull('medical_history', $upload_dir);
     $consent_waiver = uploadOrNull('consent_waiver', $upload_dir);
-    $vip_tc = uploadOrNull('vip_t&c', $upload_dir);
+    $vip_t_c = uploadOrNull('vip_t_c', $upload_dir);
     $treatment_form = uploadOrNull('treatment_form', $upload_dir);
 
     $mh = $medical_history !== null ? $conn->quote($medical_history) : 'NULL';
     $cw = $consent_waiver !== null ? $conn->quote($consent_waiver) : 'NULL';
-    $vtc = $vip_tc !== null ? $conn->quote($vip_tc) : 'NULL';
+    $vtc = $vip_t_c !== null ? $conn->quote($vip_t_c) : 'NULL';
     $tf = $treatment_form !== null ? $conn->quote($treatment_form) : 'NULL';
 
     $sql = "INSERT INTO tbl_clients (
@@ -287,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="file" class="form-control" name="vip_t&c">
+                                                <input type="file" class="form-control" name="vip_t_c">
                                                 <label class="form-label">UPLOAD VIP TERMS AND CONDITION</label>
                                             </div>
                                         </div>
