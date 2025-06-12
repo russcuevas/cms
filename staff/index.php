@@ -413,17 +413,24 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         }
 
                         let table = `<table style="width:100%; border-collapse: collapse;" border="1">
-                    <thead><tr>
+                <thead>
+                    <tr>
                         <th style="padding: 5px;">Fullname</th>
                         <th style="padding: 5px;">Remarks</th>
-                    </tr></thead><tbody>`;
+                        <th style="padding: 5px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>`;
 
                         appointments.forEach(appt => {
-                            const time = new Date(appt.appointment_datetime).toLocaleTimeString();
-                            table += `<tr>
-                        <td style="padding: 5px;">${appt.fullname}</td>
-                        <td style="padding: 5px;">${appt.remarks}</td>
-                    </tr>`;
+                            table += `<tr data-id="${appt.id}">
+                    <td style="padding: 5px;">${appt.fullname}</td>
+                    <td style="padding: 5px;">${appt.remarks}</td>
+                    <td style="padding: 5px;">
+                        <button style="background-color: orange; color: white; border: none;" onclick="editAppointment(${appt.id}, '${appt.fullname}', '${appt.remarks}', '${appt.appointment_datetime}')">UPDATE</button>
+                        <button style="background-color: red; color: white; border: none;" onclick="deleteAppointment(${appt.id})" style="color: red;">DELETE</button>
+                    </td>
+                </tr>`;
                         });
 
                         table += `</tbody></table>`;
@@ -453,6 +460,135 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 const year = dateObj.getFullYear();
                 return `${monthName} ${day}, ${year}`;
             }
+
+            window.editAppointment = function(id, fullname, remarks, datetime) {
+                const wrapper = document.createElement('div');
+
+                const nameInput = document.createElement('input');
+                nameInput.setAttribute('id', 'editFullname');
+                nameInput.setAttribute('class', 'swal-content__input');
+                nameInput.setAttribute('placeholder', 'Fullname');
+                nameInput.value = fullname;
+
+                const remarksInput = document.createElement('input');
+                remarksInput.setAttribute('id', 'editRemarks');
+                remarksInput.setAttribute('class', 'swal-content__input');
+                remarksInput.setAttribute('placeholder', 'Remarks');
+                remarksInput.value = remarks;
+
+                wrapper.appendChild(nameInput);
+                wrapper.appendChild(document.createElement('br'));
+                wrapper.appendChild(remarksInput);
+
+                swal({
+                    title: "Edit Appointment",
+                    content: wrapper,
+                    buttons: {
+                        cancel: true,
+                        confirm: {
+                            text: "Update",
+                            closeModal: false
+                        }
+                    }
+                }).then((confirm) => {
+                    if (confirm) {
+                        const updatedName = document.getElementById('editFullname').value.trim();
+                        const updatedRemarks = document.getElementById('editRemarks').value.trim();
+
+                        if (!updatedName || !updatedRemarks) {
+                            swal("Error", "Please fill in all fields.", "error");
+                            return;
+                        }
+
+                        console.log("Sending:", {
+                            id: id,
+                            fullname: updatedName,
+                            remarks: updatedRemarks
+                        });
+
+                        $.post('update_appointment.php', {
+                            id: id,
+                            fullname: updatedName,
+                            remarks: updatedRemarks
+                        }, function(response) {
+                            const res = typeof response === 'string' ? JSON.parse(response) : response;
+
+                            if (res.status === 'success') {
+                                swal("Updated!", "Appointment successfully updated.", "success")
+                                    .then(() => location.reload());
+                            } else {
+                                swal("Error", res.message || "Failed to update appointment.", "error");
+                            }
+                        });
+                    }
+                });
+            };
+
+
+            window.deleteAppointment = function(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "This appointment will be permanently deleted.",
+                    icon: "warning",
+                    buttons: ["Cancel", "Delete"],
+                    dangerMode: true
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        $.post('delete_appointment.php', {
+                            id
+                        }, function(response) {
+                            if (response === 'success') {
+                                swal("Deleted!", "Appointment has been deleted.", "success")
+                                    .then(() => location.reload());
+                            } else {
+                                swal("Error!", "Could not delete appointment.", "error");
+                            }
+                        }).fail(() => {
+                            swal("Error!", "Request failed. Try again.", "error");
+                        });
+                    }
+                });
+            };
+
+            function createEditForm(fullname, remarks) {
+                const wrapper = document.createElement("div");
+
+                function createRow(labelText, inputElement) {
+                    const row = document.createElement("div");
+                    row.style.display = "flex";
+                    row.style.alignItems = "center";
+                    row.style.marginBottom = "15px";
+
+                    const label = document.createElement("label");
+                    label.textContent = labelText;
+                    label.style.width = "80px";
+                    label.style.marginRight = "10px";
+                    label.style.textAlign = "right";
+                    label.style.fontWeight = "bold";
+
+                    row.appendChild(label);
+                    row.appendChild(inputElement);
+                    return row;
+                }
+
+                const nameInput = document.createElement("input");
+                nameInput.setAttribute("id", "edit-fullname");
+                nameInput.setAttribute("class", "swal-content__input");
+                nameInput.style.flex = "1";
+                nameInput.value = fullname;
+
+                const remarksInput = document.createElement("input");
+                remarksInput.setAttribute("id", "edit-remarks");
+                remarksInput.setAttribute("class", "swal-content__input");
+                remarksInput.style.flex = "1";
+                remarksInput.value = remarks;
+
+                wrapper.appendChild(createRow("Fullname:", nameInput));
+                wrapper.appendChild(createRow("Remarks:", remarksInput));
+
+                return wrapper;
+            }
+
 
             function createCustomForm(dateStr) {
                 const wrapper = document.createElement("div");

@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = sanitizeOrNull($conn, $_POST['name']);
     $last_name = sanitizeOrNull($conn, $_POST['surname']);
     $mobile = sanitizeOrNull($conn, $_POST['mobile']);
-    $birthday = sanitizeOrNull($conn, $_POST['birthday']);
+    $birthday = sanitizeOrNull($conn, $_POST['birthday'] ?? null);
     $is_vip = isset($_POST['is_vip']) ? (int)$_POST['is_vip'] : 0;
     $vip_value = sanitizeOrNull($conn, $_POST['vip'] ?? null);
     $valid_until_value = sanitizeOrNull($conn, $_POST['valid_until'] ?? null);
@@ -230,8 +230,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="date" class="form-control" name="birthday" required>
-                                                <label class="form-label">Date of birth <span style="color: red;">*</span></label>
+                                                <input type="date" class="form-control" name="birthday">
+                                                <label class="form-label">Date of birth <span style="color: red;"></span></label>
                                             </div>
                                         </div>
                                     </div>

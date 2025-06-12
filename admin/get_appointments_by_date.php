@@ -5,7 +5,7 @@ include '../database/connection.php';
 if (isset($_POST['date'])) {
     $date = $_POST['date'];
 
-    $stmt = $conn->prepare("SELECT fullname, remarks, appointment_datetime FROM tbl_appointment WHERE DATE(appointment_datetime) = :date");
+    $stmt = $conn->prepare("SELECT * FROM tbl_appointment WHERE DATE(appointment_datetime) = :date");
     $stmt->execute(['date' => $date]);
 
     $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);

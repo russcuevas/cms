@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = htmlspecialchars($_POST['name']);
     $last_name = htmlspecialchars($_POST['surname']);
     $mobile = htmlspecialchars($_POST['mobile']);
-    $birthday = htmlspecialchars($_POST['birthday']);
+    $birthday = isset($_POST['birthday']) ? htmlspecialchars($_POST['birthday']) : null;
     $is_vip = (int) $_POST['is_vip'];
     $valid_until = isset($_POST['valid_until']) ? htmlspecialchars($_POST['valid_until']) : null;
 
@@ -276,8 +276,8 @@ if (!$client) {
                                     <div class="col-md-6">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input type="date" class="form-control" name="birthday" required value="<?php echo htmlspecialchars($client['birthday']); ?>" required>
-                                                <label class="form-label">Date of birth <span style="color: red;">*</span></label>
+                                                <input type="date" class="form-control" name="birthday" value="<?php echo htmlspecialchars($client['birthday']); ?>">
+                                                <label class="form-label">Date of birth <span style="color: red;"></span></label>
                                             </div>
                                         </div>
                                     </div>
