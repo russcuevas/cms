@@ -300,12 +300,73 @@ if ($id) {
                                                     <?= nl2br(htmlspecialchars(strlen($remark['remarks']) > 50 ? substr($remark['remarks'], 0, 50) . '...' : $remark['remarks'])) ?>
                                                 </td>
                                                 <td>
-                                                    <a href="view_client_notes.php?id=<?= $remark['id'] ?>" class="btn bg-teal waves-effect">VIEW INFORMATION</a>
+                                                    <a href="view_client_notes.php?id=<?= $remark['id'] ?>" class="btn bg-teal">VIEW</a>
+                                                    <button class="btn bg-red" data-toggle="modal" data-target="#edit_<?php echo $remark['id']; ?>">EDIT</button>
+                                                    <button class="btn bg-red" data-toggle="modal" data-target="#delete_<?php echo $remark['id']; ?>">DELETE</button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
+
+                                <?php foreach ($remarks as $remark): ?>
+                                    <!-- EDIT MODAL -->
+                                    <div class="modal fade" id="edit_<?php echo $remark['id']; ?>" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <form method="POST" action="edit_remarks.php" enctype="multipart/form-data">
+                                                <input type="hidden" name="id" value="<?php echo $remark['id']; ?>">
+                                                <input type="hidden" name="client_id" value="<?php echo $client['id']; ?>">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Edit Remark</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label>Remarks</label>
+                                                            <textarea name="remarks" class="form-control" rows="5" required><?php echo htmlspecialchars($remark['remarks']); ?></textarea>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Staff Name</label>
+                                                            <input type="text" name="fullname" class="form-control" value="<?php echo htmlspecialchars($remark['added_by']); ?>" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Replace Photo (Optional)</label>
+                                                            <input type="file" name="photo" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn bg-teal">Save changes</button>
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- DELETE MODAL -->
+                                    <div class="modal fade" id="delete_<?php echo $remark['id']; ?>" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog" role="document">
+                                            <form method="POST" action="remove_remarks.php">
+                                                <input type="hidden" name="id" value="<?php echo $remark['id']; ?>">
+                                                <input type="hidden" name="client_id" value="<?php echo $client['id']; ?>">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Confirm Deletion</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to delete this remark?</p>
+                                                        <p><strong><?php echo htmlspecialchars($remark['remarks']); ?></strong></p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn bg-red">Delete</button>
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+
                             </div>
                         </div>
                     </div>
